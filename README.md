@@ -14,3 +14,14 @@ Ormless currently only works on postgres.
 MySQL and sqlite support will be added once Kysely support them. Kysely also has a simple interface for [third-party dialects](https://koskimas.github.io/kysely/interfaces/Dialect.html).
 
 \*\* This library is still work in progress and so does Kysely.
+
+# Shortcuts
+
+- selectOne
+- selectMany
+- createOne
+- createMany
+- updateOne
+- updateMany
+- deleteOne
+- deleteMany
