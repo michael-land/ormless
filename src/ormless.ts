@@ -42,17 +42,19 @@ export class ORMLess<DB, META extends ORMLessMetadata<DB>> {
     for (const [lfs, op, rhs] of where) {
       qb = qb.where(lfs as any, op, rhs);
     }
+    qb = qb.limit(limit).offset(offset);
 
-    return qb.limit(limit).offset(offset).execute();
+    return qb.execute();
   }
 
   async createOne<TB extends keyof DB & string, S extends AnyColumn<DB, TB>>(args: CreateOneArgs<DB, TB, S, META>) {
     const { transaction: db = this.db, table, data, select = [] } = args;
-    return db
+    const qb = db
       .insertInto(table)
       .values(data as any)
-      .returning(select)
-      .executeTakeFirstOrThrow();
+      .returning(select);
+
+    return qb.executeTakeFirstOrThrow();
   }
 
   async createMany<TB extends keyof DB & string, S extends AnyColumn<DB, TB>>(args: CreateManyArgs<DB, TB, S, META>) {
@@ -60,27 +62,31 @@ export class ORMLess<DB, META extends ORMLessMetadata<DB>> {
     if (!data.length) {
       return [];
     }
-    return db
+    const qb = db
       .insertInto(table)
       .values(data as any)
-      .returning(select)
-      .execute();
+      .returning(select);
+
+    return qb.execute();
   }
 
   async updateOne<TB extends keyof DB & string, S extends AnyColumn<DB, TB>>(args: UpdateOneArgs<DB, TB, S, META>) {
     const { transaction: db = this.db, table, where, data, select = [] } = args;
-    let qb = db.updateTable(table).set(data as any);
-
     const whereKeys = Object.keys(where);
     if (whereKeys.length !== 1) {
       throw new ORMLessMissingWhereClasueException();
     }
 
+    let qb = db
+      .updateTable(table)
+      .set(data as any)
+      .returning(select);
+
     for (const [lfs, rhs] of Object.entries((where as any)[whereKeys[0]])) {
       qb = qb.where(lfs as any, '=', rhs);
     }
 
-    return qb.returning(select).executeTakeFirstOrThrow();
+    return qb.executeTakeFirstOrThrow();
   }
 
   async updateMany<TB extends keyof DB & string, S extends AnyColumn<DB, TB>>(args: UpdateManyArgs<DB, TB, S, META>) {
@@ -96,20 +102,22 @@ export class ORMLess<DB, META extends ORMLessMetadata<DB>> {
       .updateTable(table)
       .set(data as any)
       .returning(select);
+
     for (const [lfs, op, rhs] of where) {
       qb = qb.where(lfs as any, op, rhs);
     }
+
     return qb.execute();
   }
 
   async deleteOne<TB extends keyof DB & string, S extends AnyColumn<DB, TB>>(args: DeleteOneArgs<DB, TB, S, META>) {
     const { transaction: db = this.db, table, where, select = [] } = args;
-    let qb = db.deleteFrom(table).returning(select);
-
     const whereKeys = Object.keys(where);
     if (whereKeys.length !== 1) {
       throw new ORMLessMissingWhereClasueException();
     }
+
+    let qb = db.deleteFrom(table).returning(select);
 
     for (const [lfs, rhs] of Object.entries((where as any)[whereKeys[0]])) {
       qb = qb.where(lfs as any, '=', rhs);
