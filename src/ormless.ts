@@ -89,7 +89,7 @@ export class ORMLess<DB, META extends ORMLessMetadata<DB>> {
       return [];
     }
     if (!where.length) {
-      throw new Error('updateMany without where clause is not allowed');
+      throw new ORMLessMissingWhereClasueException();
     }
 
     let qb = db
@@ -121,7 +121,7 @@ export class ORMLess<DB, META extends ORMLessMetadata<DB>> {
   async deleteMany<TB extends keyof DB & string, S extends AnyColumn<DB, TB>>(args: DeleteManyArgs<DB, TB, S, META>) {
     const { transaction: db = this.db, table, where, select = [] } = args;
     if (!where.length) {
-      throw new Error('updateMany without where clause is not allowed');
+      throw new ORMLessMissingWhereClasueException();
     }
 
     let qb = db.deleteFrom(table).returning(select);
