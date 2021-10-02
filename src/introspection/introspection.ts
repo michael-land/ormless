@@ -163,7 +163,7 @@ export class Introspection {
     if (this.#config.types[udtName]) {
       return this.#config.types[udtName];
     }
-    let type: string;
+
     switch (udtName) {
       case 'bpchar':
       case 'char':
