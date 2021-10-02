@@ -1,0 +1,92 @@
+import { Kysely } from "kysely";
+import { ORMLess } from '../src/ormless';
+
+export namespace db {
+
+{{#each schemas}}
+
+export namespace {{schemaName.pascalCase}} {
+
+    {{!-- Tables --}}
+    {{#each tables}}
+    export namespace {{tableName.pascalCase}} {
+      export type PrimaryKeyConstriant = string
+
+      export type UniqueConstriants = string
+
+      export interface WhereUniqueInput {
+        pk: {{{pk}}};
+      }
+
+      export interface Model {
+        {{#each columns}}
+        '{{columnName.camelCase}}': {{columnType}}{{#if nullable}} | null{{/if}};
+        {{/each}}
+      }
+
+      export interface Select extends Model {}
+
+      export interface Insert {
+        {{#each columns}}
+        {{#unless isGenerated}}
+        '{{columnName.camelCase}}'{{#if hasDefault}}?{{/if}}: {{columnType}}{{#if nullable}} | null{{/if}};
+        {{/unless}}
+        {{/each}}
+      }
+
+      export interface Update extends Partial<Insert>{ }
+    }
+    {{/each}}
+
+    {{!-- Enums --}}
+    {{#each enums}}
+    export type {{enumName.constantCase}} =
+    {{#each enumValues }}
+      | '{{this}}'
+    {{/each}}
+    {{/each}}
+
+}
+
+
+{{/each}}
+}
+
+
+
+
+interface Database {
+  {{#each schemas}}
+    {{#each tables}}
+      '{{#unless ../isInPath}}{{../schemaName.camelCase}}.{{/unless}}{{tableName.camelCase}}': db.{{../schemaName.pascalCase}}.{{tableName.pascalCase}}.Select
+    {{/each}}
+  {{/each}}
+}
+
+interface DatabaseMetadata {
+  {{#each schemas}}
+    {{#each tables}}
+      '{{#unless ../isInPath}}{{../schemaName.camelCase}}.{{/unless}}{{tableName.camelCase}}': {
+        {{#if isView}}
+        unique: never,
+        insert: never,
+        update: never
+        {{else}}
+        unique: db.{{../schemaName.pascalCase}}.{{tableName.pascalCase}}.WhereUniqueInput,
+        insert: db.{{../schemaName.pascalCase}}.{{tableName.pascalCase}}.Insert,
+        update: db.{{../schemaName.pascalCase}}.{{tableName.pascalCase}}.Update
+        {{/if}}
+      }
+    {{/each}}
+  {{/each}}
+}
+
+export const db = new Kysely<Database>({
+  database: process.env.DATABASE_NAME!,
+  host: process.env.DATABASE_HOST!,
+  user: process.env.DATABASE_USER!,
+  password: process.env.DATABASE_PASSWORD!,
+  dialect: 'postgres',
+});
+
+export const dbShortcuts = new ORMLess<Database, DatabaseMetadata>(db);

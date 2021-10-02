@@ -1,0 +1,48 @@
+{
+  "name": "ormless",
+  "version": "0.0.1",
+  "description": "Type safe SQL shortcuts based on kysely",
+  "main": "dist/cjs/index.js",
+  "module": "dist/esm/index.js",
+  "exports": {
+    ".": {
+      "import": "./dist/esm/index.js",
+      "require": "./dist/cjs/index.js"
+    }
+  },
+  "scripts": {
+    "prebuild": "rm -rf dist",
+    "postbuild": "./scripts/postbuild",
+    "build": "npm run build:esm && npm run build:cjs",
+    "build:esm": "tsc -p tsconfig-esm.json",
+    "build:cjs": "tsc -p tsconfig-cjs.json",
+    "dev": "node -r ts-node/register -r dotenv/config scratchpad/demo",
+    "db:pull": "node -r ts-node/register -r dotenv/config scratchpad/introspect",
+    "db:generate": "node -r ts-node/register -r dotenv/config src/cli",
+    "prepare": "husky install"
+  },
+  "author": "Michael Li",
+  "license": "ISC",
+  "dependencies": {
+    "change-case": "^4.1.2"
+  },
+  "peerDependencies": {
+    "kysely": "^0.3.9"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^13.2.0",
+    "@commitlint/config-conventional": "^13.2.0",
+    "@types/change-case": "^2.3.1",
+    "@types/node": "^16.10.2",
+    "@types/prettier": "^2.4.1",
+    "@typescript-eslint/eslint-plugin": "^4.32.0",
+    "@typescript-eslint/parser": "^4.32.0",
+    "dotenv": "^10.0.0",
+    "eslint": "^7.32.0",
+    "handlebars": "^4.7.7",
+    "husky": "^7.0.2",
+    "pg": "^8.7.1",
+    "prettier": "^2.4.1",
+    "ts-node": "^10.2.1"
+  }
+}

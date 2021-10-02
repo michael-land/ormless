@@ -1,0 +1,12 @@
+interface Database {
+  {{#each schemas}}
+    {{#each tables}}
+      '{{#unless ../isInPath}}{{../schemaName.camelCase}}.{{/unless}}{{tableName.camelCase}}': {
+        {{#each columns}}
+        '{{columnName.camelCase}}': {{columnType}}{{#if nullable}} | null{{/if}};
+        {{/each}} 
+      }
+    {{/each}}
+  {{/each}}
+}
+ 
