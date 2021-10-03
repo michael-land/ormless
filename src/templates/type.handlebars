@@ -4,97 +4,39 @@
 import { CamelCasePlugin, Kysely } from "kysely";
 import { ORMLess } from '../src/ormless';
 
-
 export namespace {{root}} {
-
-  {{!-- Schemas --}}
-  {{#each schemas}}
-  export namespace {{schemaName.pascalCase}} {
-
-    {{!-- Tables --}}
-    {{#each schemaTables}}
-    export namespace {{tableName.pascalCase}} {
-      export type TableName = '{{tableName.original}}';
-
-      export type PrimaryKeyConstriant = 
-      {{#each tablePrimaryConstraints}}
-      | '{{constraintName.original}}'
-      {{else}}
-        never
-      {{/each}};
-
-      export type UniqueConstriants = 
-      {{#each tableUniqueConstraints}}
-      | '{{constraintName.original}}'
-      {{else}}
-        never
-      {{/each}};
-      
-
-      export interface WhereUniqueInput {
-      {{#each tableUniqueConstraints}}
-        {{#if alias}}{{alias}}{{else}}{{constraintName.camelCase}}{{/if}}: {{{constraintType}}}
-      {{/each}}
-      }
-
-      export interface Model {
-      {{#each tableColumns}}
-        '{{columnName.camelCase}}'{{#if isOptional}}?{{/if}}: {{columnType}}{{#if nullable}} | null{{/if}};
-      {{/each}}
-      }
-
-      export interface Insert extends Model {}
-
-      export interface Update extends Partial<Insert>{}
-
-      export interface Select extends Required<Model> {}
+  {{#if withNamespace}}
+    {{#each schemas as |schema|}}
+    export namespace {{schemaName.pascalCase}} {
+      {{> generateSchema schema }}
     }
     {{/each}}
-
-    {{!-- Views --}}
-    {{#each schemaViews}}
-    export namespace {{viewName.pascalCase}} {
-      export type ViewName = '{{viewName.original}}';
-
-      export interface Model {
-      {{#each viewColumns}}
-        '{{columnName.camelCase}}'{{#if isOptional}}?{{/if}}: {{columnType}}{{#if nullable}} | null{{/if}};
-      {{/each}}
-      }
-
-      export interface Select extends Required<Model> {}
-    }
+  {{else}}
+    {{#each schemas as |schema|}}
+      {{> generateSchema schema }}
     {{/each}}
+  {{/if}}
 
-    {{!-- Enums --}}
-    {{#each schemaEnums}}
-      export type {{enumName.constantCase}} =
-      {{#each enumValues }}
-        | '{{this}}'
-      {{/each}}
-    {{/each}}
-  }
-  {{/each}}
 }
 
-interface Database {
+export interface Database {
   {{#each schemas}}
     {{#each schemaTables}}
-      '{{#unless ../isInSearchPath}}{{../schemaName.camelCase}}.{{/unless}}{{tableName.camelCase}}': db.{{../schemaName.pascalCase}}.{{tableName.pascalCase}}.Select
+      '{{#unless ../isInSearchPath}}{{../schemaName.camelCase}}.{{/unless}}{{tableName.camelCase}}': {{../../root}}.{{#if ../../withNamespace}}{{../schemaName.pascalCase}}.{{/if}}{{tableName.pascalCase}}.Select
     {{/each}}
     {{#each schemaViews}}
-      '{{#unless ../isInSearchPath}}{{../schemaName.camelCase}}.{{/unless}}{{viewName.camelCase}}': db.{{../schemaName.pascalCase}}.{{viewName.pascalCase}}.Select
+      '{{#unless ../isInSearchPath}}{{../schemaName.camelCase}}.{{/unless}}{{viewName.camelCase}}': {{../../root}}.{{#if ../../withNamespace}}{{../schemaName.pascalCase}}.{{/if}}{{viewName.pascalCase}}.Select
     {{/each}}
   {{/each}}
 }
 
-interface DatabaseMetadata {
+export interface DatabaseMetadata {
   {{#each schemas}}
     {{#each schemaTables}}
       '{{#unless ../isInSearchPath}}{{../schemaName.camelCase}}.{{/unless}}{{tableName.camelCase}}': {
-        unique: db.{{../schemaName.pascalCase}}.{{tableName.pascalCase}}.WhereUniqueInput,
-        insert: db.{{../schemaName.pascalCase}}.{{tableName.pascalCase}}.Insert,
-        update: db.{{../schemaName.pascalCase}}.{{tableName.pascalCase}}.Update
+        unique: {{../../root}}.{{#if ../../withNamespace}}{{../schemaName.pascalCase}}.{{/if}}{{tableName.pascalCase}}.WhereUniqueInput,
+        insert: {{../../root}}.{{#if ../../withNamespace}}{{../schemaName.pascalCase}}.{{/if}}{{tableName.pascalCase}}.Insert,
+        update: {{../../root}}.{{#if ../../withNamespace}}{{../schemaName.pascalCase}}.{{/if}}{{tableName.pascalCase}}.Update
       }
     {{/each}}
     {{#each schemaViews}}
@@ -117,3 +59,71 @@ export const db = new Kysely<Database>({
 });
 
 export const dbShortcuts = new ORMLess<Database, DatabaseMetadata>(db);
+
+
+ 
+
+{{#*inline "generateSchema"}}
+  {{!-- Tables --}}
+  {{#each schemaTables}}
+  export namespace {{tableName.pascalCase}} {
+    export type TableName = '{{tableName.original}}';
+
+    export type PrimaryKeyConstriant = 
+    {{#each tablePrimaryConstraints}}
+    | '{{constraintName.original}}'
+    {{else}}
+      never
+    {{/each}};
+
+    export type UniqueConstriants = 
+    {{#each tableUniqueConstraints}}
+    | '{{constraintName.original}}'
+    {{else}}
+      never
+    {{/each}};
+    
+
+    export interface WhereUniqueInput {
+    {{#each tableUniqueConstraints}}
+      {{#if alias}}{{alias}}{{else}}{{constraintName.camelCase}}{{/if}}: {{{constraintTypescriptType}}}
+    {{/each}}
+    }
+
+    export interface Model {
+    {{#each tableColumns}}
+      '{{columnName.camelCase}}'{{#if isOptional}}?{{/if}}: {{columnType}}{{#if nullable}} | null{{/if}};
+    {{/each}}
+    }
+
+    export interface Insert extends Model {}
+
+    export interface Update extends Partial<Insert>{}
+
+    export interface Select extends Required<Model> {}
+  }
+  {{/each}}
+
+  {{!-- Views --}}
+  {{#each schemaViews}}
+  export namespace {{viewName.pascalCase}} {
+    export type ViewName = '{{viewName.original}}';
+
+    export interface Model {
+    {{#each viewColumns}}
+      '{{columnName.camelCase}}'{{#if isOptional}}?{{/if}}: {{columnType}}{{#if nullable}} | null{{/if}};
+    {{/each}}
+    }
+
+    export interface Select extends Required<Model> {}
+  }
+  {{/each}}
+
+  {{!-- Enums --}}
+  {{#each schemaEnums}}
+    export type {{enumName.constantCase}} =
+    {{#each enumValues }}
+      | '{{this}}'
+    {{/each}}
+  {{/each}}
+{{/inline}}

@@ -142,13 +142,21 @@ export class Introspection {
 
     const templates = await Promise.all(
       Object.entries(this.#config.generate).map(
-        ([key, { template, root = 'Database' }]) =>
+        ([key, { template, root = 'Database', namespace = 'auto' }]) =>
           new Promise<[string, string]>((resolve, reject) =>
             fs.readFile(template, { encoding: 'utf-8' }, (err, data) => {
               if (err) {
                 reject(err);
               } else {
-                resolve([key, handlebars.compile(data)({ schemas, root })]);
+                resolve([
+                  key,
+                  handlebars.compile(data)({
+                    schemas,
+                    root,
+                    withNamespace:
+                      namespace !== 'never' && namespace === 'auto' && Object.keys(this.#config.database).length > 1,
+                  }),
+                ]);
               }
             })
           )
