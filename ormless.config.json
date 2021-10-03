@@ -27,9 +27,8 @@
   },
   "generate": {
     "postgres.interface": {
-      "root": "PostgresSchema",
-      "folder": "src/introspection/explorer",
-      "template": "./src/templates/private/ormless.handlebars"
+      "root": "Postgres",
+      "folder": "src/introspection/explorer"
     }
   },
   "types": {
