@@ -8,6 +8,11 @@ import {
   RawBuilderFactory,
 } from 'kysely/dist/cjs/query-builder/type-utils';
 
+type RequireExactlyOne<ObjectType, KeysType extends keyof ObjectType = keyof ObjectType> = {
+  [Key in KeysType]: Required<Pick<ObjectType, Key>> & Partial<Record<Exclude<KeysType, Key>, never>>;
+}[KeysType] &
+  Omit<ObjectType, KeysType>;
+
 export { AnyColumn };
 
 export type ORMLessMetadata<DB> = {
@@ -15,12 +20,6 @@ export type ORMLessMetadata<DB> = {
     unique: { [K: string]: any };
     insert: any;
     update: any;
-  };
-};
-
-export type WhereUniqueInput<DB, TB extends keyof DB, META extends ORMLessMetadata<DB>> = {
-  [U in keyof META[TB]['unique']]?: {
-    [K in META[TB]['unique'][U]]: DB[TB][K];
   };
 };
 
@@ -40,7 +39,7 @@ export interface FindOneArgs<
 > {
   db: Kysely<DB>;
   debug?: true;
-  where: WhereUniqueInput<DB, TB, META>;
+  where: RequireExactlyOne<META[TB]['unique']>;
   select: ReadonlyArray<S>;
 }
 
@@ -92,7 +91,7 @@ export interface UpdateOneArgs<
   debug?: true;
   data: META[TB]['update'];
   select: ReadonlyArray<S>;
-  where: WhereUniqueInput<DB, TB, META>;
+  where: RequireExactlyOne<META[TB]['unique']>;
 }
 
 export interface UpdateManyArgs<
@@ -118,7 +117,7 @@ export interface DeleteOneArgs<
   db: Kysely<DB>;
   debug?: true;
   select: ReadonlyArray<S>;
-  where: WhereUniqueInput<DB, TB, META>;
+  where: RequireExactlyOne<META[TB]['unique']>;
 }
 
 export interface DeleteManyArgs<

@@ -14,7 +14,9 @@ import {
   UpdateOneArgs,
 } from './ormless.interfaces';
 
-export abstract class ORMLessQueryable<DB, TB extends keyof DB & string, META extends ORMLessMetadata<DB>> {
+// TODO, overload typescript functions to allow return debug ? qb.compile() : qb.executeTakeFirstOrThrow();
+
+export abstract class ORMLessQueryable<DB, META extends ORMLessMetadata<DB>, TB extends keyof DB & string> {
   protected abstract table: TB;
 
   async selectOne<S extends AnyColumn<DB, TB>>(args: FindOneArgs<DB, TB, META, S>) {
@@ -27,7 +29,7 @@ export abstract class ORMLessQueryable<DB, TB extends keyof DB & string, META ex
       qb = qb.where(lfs as any, '=', rhs);
     }
 
-    return debug ? qb.compile() : qb.executeTakeFirstOrThrow();
+    return qb.executeTakeFirstOrThrow();
   }
 
   async selectMany<S extends AnyColumn<DB, TB>>(args: FindManyArgs<DB, TB, S>) {
@@ -42,15 +44,15 @@ export abstract class ORMLessQueryable<DB, TB extends keyof DB & string, META ex
     }
     qb = qb.limit(limit).offset(offset);
 
-    return debug ? qb.compile() : qb.execute();
+    return qb.execute();
   }
 }
 
 export abstract class ORMLess<
   DB,
-  TB extends keyof DB & string,
-  META extends ORMLessMetadata<DB>
-> extends ORMLessQueryable<DB, TB, META> {
+  META extends ORMLessMetadata<DB>,
+  TB extends keyof DB & string
+> extends ORMLessQueryable<DB, META, TB> {
   async createOne<S extends AnyColumn<DB, TB>>(args: CreateOneArgs<DB, TB, META, S>) {
     const { db, debug = false, data, select = [] } = args;
     const qb = db
@@ -58,7 +60,7 @@ export abstract class ORMLess<
       .values(data as any)
       .returning(select);
 
-    return debug ? qb.compile() : qb.executeTakeFirstOrThrow();
+    return qb.executeTakeFirstOrThrow();
   }
 
   async createMany<S extends AnyColumn<DB, TB>>(args: CreateManyArgs<DB, TB, META, S>) {
@@ -71,7 +73,7 @@ export abstract class ORMLess<
       .values(data as any)
       .returning(select);
 
-    return debug ? qb.compile() : qb.execute();
+    return qb.execute();
   }
 
   async updateOne<S extends AnyColumn<DB, TB>>(args: UpdateOneArgs<DB, TB, META, S>) {
@@ -90,7 +92,7 @@ export abstract class ORMLess<
       qb = qb.where(lfs as any, '=', rhs);
     }
 
-    return debug ? qb.compile() : qb.executeTakeFirstOrThrow();
+    return qb.executeTakeFirstOrThrow();
   }
 
   async updateMany<S extends AnyColumn<DB, TB>>(args: UpdateManyArgs<DB, TB, META, S>) {
@@ -111,7 +113,7 @@ export abstract class ORMLess<
       qb = qb.where(lfs as any, op, rhs);
     }
 
-    return debug ? qb.compile() : qb.execute();
+    return qb.execute();
   }
 
   async deleteOne<S extends AnyColumn<DB, TB>>(args: DeleteOneArgs<DB, TB, META, S>) {
@@ -127,7 +129,7 @@ export abstract class ORMLess<
       qb = qb.where(lfs as any, '=', rhs);
     }
 
-    return debug ? qb.compile() : qb.executeTakeFirstOrThrow();
+    return qb.executeTakeFirstOrThrow();
   }
 
   async deleteMany<S extends AnyColumn<DB, TB>>(args: DeleteManyArgs<DB, TB, S>) {
@@ -140,6 +142,6 @@ export abstract class ORMLess<
     for (const [lfs, op, rhs] of where) {
       qb = qb.where(lfs as any, op, rhs);
     }
-    return debug ? qb.compile() : qb.execute();
+    return qb.execute();
   }
 }
