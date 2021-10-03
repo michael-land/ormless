@@ -1,0 +1,20 @@
+{
+  "database": {
+    "public": {}
+  },
+  "paths": ["public"],
+  "connection": {
+    "database": "ormless",
+    "host": "localhost",
+    "user": "michael",
+    "dialect": "postgres"
+  },
+  "generate": {
+    "database": {
+      "root": "db",
+      "folder": "example",
+      "template": "./src/templates/kysely.handlebars"
+    }
+  },
+  "import": "../src/ormless"
+}

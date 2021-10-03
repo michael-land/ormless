@@ -1,4 +1,3 @@
-
 docker pull postgres
 docker run --name postgres -e POSTGRES_PASSWORD=secret -d postgres -p 5433
 docker exec -it postgres psql -U postgres

@@ -1,5 +1,8 @@
 import { CustomerRepository, db } from './database';
 
+// introspect database:
+// ormless -c example/ormless.config.json
+
 async function main() {
   const customerRepo = new CustomerRepository();
 

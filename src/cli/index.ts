@@ -1,1 +1,2 @@
-export * from './cli';
+import { cli } from './cli';
+cli();

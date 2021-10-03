@@ -6,7 +6,7 @@ import { Explorer, ExplorerConfig } from './explorer';
 
 export interface IntrospectionConfig extends ExplorerConfig {
   paths: string[];
-  types: Record<string, string>;
+  types?: Record<string, string>;
   generate: Record<
     string,
     {
@@ -171,7 +171,7 @@ export class Introspection {
   }
 
   private getTypescriptType(udtName: string): string {
-    if (this.#config.types[udtName]) {
+    if (this.#config.types && this.#config.types[udtName]) {
       return this.#config.types[udtName];
     }
 

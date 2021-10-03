@@ -1,6 +1,7 @@
 {
   "name": "ormless",
   "version": "0.0.1",
+  "bin": "./bin/ormless",
   "description": "Type safe SQL shortcuts based on kysely",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
@@ -37,6 +38,7 @@
     "@types/change-case": "^2.3.1",
     "@types/node": "^16.10.2",
     "@types/prettier": "^2.4.1",
+    "@types/yargs": "^17.0.3",
     "@typescript-eslint/eslint-plugin": "^4.32.0",
     "@typescript-eslint/parser": "^4.32.0",
     "dotenv": "^10.0.0",
@@ -45,6 +47,7 @@
     "husky": "^7.0.2",
     "pg": "^8.7.1",
     "prettier": "^2.4.1",
-    "ts-node": "^10.2.1"
+    "ts-node": "^10.2.1",
+    "yargs": "^17.2.1"
   }
 }
