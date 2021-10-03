@@ -9,9 +9,18 @@ Features:
 
 # Installation
 
+
 Ormless currently only works on postgres.
 
 MySQL and sqlite support will be added once Kysely support them. Kysely also has a simple interface for [third-party dialects](https://koskimas.github.io/kysely/interfaces/Dialect.html).
+
+if you only need both interfaces and shortcut functions.
+
+`npm install ormless@latest`
+
+if you only need interfaces only.
+
+`npx ormless@latest`
 
 \*\* This library is still work in progress and so does Kysely.
 
@@ -22,58 +31,43 @@ ormless.config.json
 ```json
 {
   "database": {
-    "information_schema": {
-      "tables": {
-        "tables": {},
-        "table_constraints": {},
-        "key_column_usage": {},
-        "columns": {},
-        "constraint_column_usage": {}
-      }
-    },
-    "pg_catalog": {
-      "tables": {
-        "pg_constraint": {},
-        "pg_enum": {},
-        "pg_type": {},
-        "pg_namespace": {}
-      }
+    "public": {
+      "actor": {},
+      "address": {},
+      "category": {},
+      "city": {},
+      "country": {},
+      "customer": {},
+      "film": {},
+      "film_actor": {},
+      "film_category": {},
+      "inventory": {},
+      "language": {},
+      "payment": {},
+      "rental": {},
+      "staff": {},
+      "store": {}
     }
   },
-  "paths": ["information_schema", "pg_catalog"],
+  "paths": ["public"],
   "connection": {
-    "dialect": "postgres",
-    "database": "postgres",
+    "database": "ormless",
     "host": "localhost",
-    "user": "michael"
+    "user": "michael",
+    "dialect": "postgres"
   },
   "generate": {
-    "postgres.interface": {
-      "root": "Postgres",
-      "folder": "src/introspection/explorer"
+    "database": {
+      "repository": true,
+      "folder": "example"
     }
-  },
-  "types": {
-    "regproc": "string",
-    "pg_node_tree": "string",
-    "aclitem": "string",
-    "oidvector": "string",
-    "pg_lsn": "string",
-    "xid": "string",
-    "int2vector": "string",
-    "anyarray": "string",
-    "regtype": "string",
-    "pg_ndistinct": "string",
-    "pg_dependencies": "string",
-    "pg_mcv_list": "string"
-  },
-  "import": "../src/ormless"
+  }
 }
 ```
 
 [Introspect Result](https://github.com/xiaoyu-tamu/ormless/blob/main/example/database.ts)
 
-[Generate Repository Client](https://github.com/xiaoyu-tamu/ormless/blob/main/example/index.ts)
+[Usage](https://github.com/xiaoyu-tamu/ormless/blob/main/example/index.ts)
 
 # Build-in Shortcuts
 
