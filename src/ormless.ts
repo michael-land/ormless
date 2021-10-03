@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { AnyColumn } from 'kysely';
 import { ORMLessMissingWhereClasueException } from './ormless.exceptions';
 import {
+  AnyColumn,
   CreateManyArgs,
   CreateOneArgs,
   DeleteManyArgs,

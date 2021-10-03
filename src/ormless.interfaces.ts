@@ -8,6 +8,8 @@ import {
   RawBuilderFactory,
 } from 'kysely/dist/cjs/query-builder/type-utils';
 
+export { AnyColumn };
+
 export type ORMLessMetadata<DB> = {
   [TB in keyof DB]: {
     unique: { [K: string]: any };

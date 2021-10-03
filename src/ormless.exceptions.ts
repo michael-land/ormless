@@ -1,6 +1,6 @@
 export class ORMLessMissingWhereClasueException extends Error {
   constructor() {
-    super('where must have exact 1 key');
+    super('where clasue must have exact 1 key');
   }
 }
 
