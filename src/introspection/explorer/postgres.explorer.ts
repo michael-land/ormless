@@ -27,7 +27,6 @@ export class PostgresExplorer implements ExplorerMethods<PostgresSchema> {
           .filter(guard.isDefined)
       ),
     ];
-    console.log(this.#excludedTables);
   }
 
   async getTableDefinitions({ db }: ExplorerMethodsArgs<PostgresSchema>) {

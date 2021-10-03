@@ -4,7 +4,7 @@ import * as prettier from 'prettier';
 import { Introspection, IntrospectionConfig } from '../introspection/introspection';
 
 export interface CliConfig extends IntrospectionConfig {
-  prettier?: prettier.RequiredOptions;
+  prettier?: Partial<prettier.RequiredOptions> | null;
 }
 
 export async function cli(config: CliConfig) {

@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { AnyColumn, Kysely } from 'kysely';
+import { AnyColumn } from 'kysely';
 import { ORMLessMissingWhereClasueException } from './ormless.exceptions';
 import {
   CreateManyArgs,
@@ -14,71 +14,75 @@ import {
   UpdateOneArgs,
 } from './ormless.interfaces';
 
-export class ORMLess<DB, META extends ORMLessMetadata<DB>> {
-  constructor(private readonly db: Kysely<DB>) {}
+export abstract class ORMLessQueryable<DB, TB extends keyof DB & string, META extends ORMLessMetadata<DB>> {
+  protected abstract table: TB;
 
-  async selectOne<TB extends keyof DB & string, S extends AnyColumn<DB, TB>>(args: FindOneArgs<DB, TB, S, META>) {
-    const { transaction: db = this.db, table, where, select } = args;
+  async selectOne<S extends AnyColumn<DB, TB>>(args: FindOneArgs<DB, TB, META, S>) {
+    const { db, debug = false, where, select } = args;
 
-    let qb = db.selectFrom(table).select(select);
+    let qb = db.selectFrom(this.table).select(select);
     const whereKeys = Object.keys(where);
-    if (whereKeys.length !== 1) {
-      throw new ORMLessMissingWhereClasueException();
-    }
 
     for (const [lfs, rhs] of Object.entries((where as any)[whereKeys[0]])) {
       qb = qb.where(lfs as any, '=', rhs);
     }
-    return qb.executeTakeFirstOrThrow();
+
+    return debug ? qb.compile() : qb.executeTakeFirstOrThrow();
   }
 
-  async selectMany<TB extends keyof DB & string, S extends AnyColumn<DB, TB>>(args: FindManyArgs<DB, TB, S>) {
-    const { transaction: db = this.db, table, where, select, limit, offset } = args;
+  async selectMany<S extends AnyColumn<DB, TB>>(args: FindManyArgs<DB, TB, S>) {
+    const { db, debug = false, where, select, limit, offset } = args;
     if (!select.length) {
       return [];
     }
 
-    let qb = db.selectFrom(table).select(select);
+    let qb = db.selectFrom(this.table).select(select);
     for (const [lfs, op, rhs] of where) {
       qb = qb.where(lfs as any, op, rhs);
     }
     qb = qb.limit(limit).offset(offset);
 
-    return qb.execute();
+    return debug ? qb.compile() : qb.execute();
   }
+}
 
-  async createOne<TB extends keyof DB & string, S extends AnyColumn<DB, TB>>(args: CreateOneArgs<DB, TB, S, META>) {
-    const { transaction: db = this.db, table, data, select = [] } = args;
+export abstract class ORMLess<
+  DB,
+  TB extends keyof DB & string,
+  META extends ORMLessMetadata<DB>
+> extends ORMLessQueryable<DB, TB, META> {
+  async createOne<S extends AnyColumn<DB, TB>>(args: CreateOneArgs<DB, TB, META, S>) {
+    const { db, debug = false, data, select = [] } = args;
     const qb = db
-      .insertInto(table)
+      .insertInto(this.table)
       .values(data as any)
       .returning(select);
 
-    return qb.executeTakeFirstOrThrow();
+    return debug ? qb.compile() : qb.executeTakeFirstOrThrow();
   }
 
-  async createMany<TB extends keyof DB & string, S extends AnyColumn<DB, TB>>(args: CreateManyArgs<DB, TB, S, META>) {
-    const { transaction: db = this.db, table, data, select = [] } = args;
+  async createMany<S extends AnyColumn<DB, TB>>(args: CreateManyArgs<DB, TB, META, S>) {
+    const { db, debug = false, data, select = [] } = args;
     if (!data.length) {
       return [];
     }
     const qb = db
-      .insertInto(table)
+      .insertInto(this.table)
       .values(data as any)
       .returning(select);
 
-    return qb.execute();
+    return debug ? qb.compile() : qb.execute();
   }
 
-  async updateOne<TB extends keyof DB & string, S extends AnyColumn<DB, TB>>(args: UpdateOneArgs<DB, TB, S, META>) {
-    const { transaction: db = this.db, table, where, data, select = [] } = args;
+  async updateOne<S extends AnyColumn<DB, TB>>(args: UpdateOneArgs<DB, TB, META, S>) {
+    const { db, debug = false, where, data, select = [] } = args;
     const whereKeys = Object.keys(where);
     if (whereKeys.length !== 1) {
       throw new ORMLessMissingWhereClasueException();
     }
 
     let qb = db
-      .updateTable(table)
+      .updateTable(this.table)
       .set(data as any)
       .returning(select);
 
@@ -86,11 +90,11 @@ export class ORMLess<DB, META extends ORMLessMetadata<DB>> {
       qb = qb.where(lfs as any, '=', rhs);
     }
 
-    return qb.executeTakeFirstOrThrow();
+    return debug ? qb.compile() : qb.executeTakeFirstOrThrow();
   }
 
-  async updateMany<TB extends keyof DB & string, S extends AnyColumn<DB, TB>>(args: UpdateManyArgs<DB, TB, S, META>) {
-    const { transaction: db = this.db, table, where, data, select = [] } = args;
+  async updateMany<S extends AnyColumn<DB, TB>>(args: UpdateManyArgs<DB, TB, META, S>) {
+    const { db, debug = false, where, data, select = [] } = args;
     if (!data.length) {
       return [];
     }
@@ -99,7 +103,7 @@ export class ORMLess<DB, META extends ORMLessMetadata<DB>> {
     }
 
     let qb = db
-      .updateTable(table)
+      .updateTable(this.table)
       .set(data as any)
       .returning(select);
 
@@ -107,35 +111,35 @@ export class ORMLess<DB, META extends ORMLessMetadata<DB>> {
       qb = qb.where(lfs as any, op, rhs);
     }
 
-    return qb.execute();
+    return debug ? qb.compile() : qb.execute();
   }
 
-  async deleteOne<TB extends keyof DB & string, S extends AnyColumn<DB, TB>>(args: DeleteOneArgs<DB, TB, S, META>) {
-    const { transaction: db = this.db, table, where, select = [] } = args;
+  async deleteOne<S extends AnyColumn<DB, TB>>(args: DeleteOneArgs<DB, TB, META, S>) {
+    const { db, debug = false, where, select = [] } = args;
     const whereKeys = Object.keys(where);
     if (whereKeys.length !== 1) {
       throw new ORMLessMissingWhereClasueException();
     }
 
-    let qb = db.deleteFrom(table).returning(select);
+    let qb = db.deleteFrom(this.table).returning(select);
 
     for (const [lfs, rhs] of Object.entries((where as any)[whereKeys[0]])) {
       qb = qb.where(lfs as any, '=', rhs);
     }
 
-    return qb.executeTakeFirstOrThrow();
+    return debug ? qb.compile() : qb.executeTakeFirstOrThrow();
   }
 
-  async deleteMany<TB extends keyof DB & string, S extends AnyColumn<DB, TB>>(args: DeleteManyArgs<DB, TB, S, META>) {
-    const { transaction: db = this.db, table, where, select = [] } = args;
+  async deleteMany<S extends AnyColumn<DB, TB>>(args: DeleteManyArgs<DB, TB, S>) {
+    const { db, debug = false, where, select = [] } = args;
     if (!where.length) {
       throw new ORMLessMissingWhereClasueException();
     }
 
-    let qb = db.deleteFrom(table).returning(select);
+    let qb = db.deleteFrom(this.table).returning(select);
     for (const [lfs, op, rhs] of where) {
       qb = qb.where(lfs as any, op, rhs);
     }
-    return qb.execute();
+    return debug ? qb.compile() : qb.execute();
   }
 }
