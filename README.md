@@ -18,6 +18,7 @@ MySQL and sqlite support will be added once Kysely support them. Kysely also has
 # Example
 
 [Introspect](https://github.com/xiaoyu-tamu/ormless/blob/main/example/database.ts)
+
 [KyselyRepostory](https://github.com/xiaoyu-tamu/ormless/blob/main/example/index.ts)
 
 # Build-in Shortcuts
