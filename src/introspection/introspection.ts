@@ -3,6 +3,7 @@ import * as fs from 'fs';
 import * as handlebars from 'handlebars';
 import { guard } from '../utils';
 import { Explorer, ExplorerConfig } from './explorer';
+import * as path from 'path';
 
 export interface IntrospectionConfig extends ExplorerConfig {
   paths: string[];
@@ -30,8 +31,6 @@ export class Introspection {
   async introspect() {
     const explorer = new Explorer(this.#config);
     const definitions = await explorer.getDefinitions();
-
-    console.log(definitions.tables);
 
     const schemas: SchemaModel[] = Object.keys(this.#config.database).map((schema) => ({
       isInSearchPath: this.#config.paths.includes(schema),
@@ -151,18 +150,19 @@ export class Introspection {
         })
         .filter(guard.isDefined),
     }));
+    console.log(__dirname);
 
     handlebars.registerPartial(
       'generateSchema',
-      fs.readFileSync('./src/templates/partials/schema.handlebars', 'utf-8')
+      fs.readFileSync(path.join(__dirname, '../templates/partials/schema.handlebars'), 'utf-8')
     );
     handlebars.registerPartial(
       'generateTableRepository',
-      fs.readFileSync('./src/templates/partials/table-repository.handlebars', 'utf-8')
+      fs.readFileSync(path.join(__dirname, '../templates/partials/table-repository.handlebars'), 'utf-8')
     );
     handlebars.registerPartial(
       'generateViewRepository',
-      fs.readFileSync('./src/templates/partials/view-repository.handlebars', 'utf-8')
+      fs.readFileSync(path.join(__dirname, '../templates/partials/view-repository.handlebars'), 'utf-8')
     );
 
     const templates = await Promise.all(
@@ -170,7 +170,7 @@ export class Introspection {
         ([
           key,
           {
-            template = './src/templates/template.handlebars',
+            template = path.join(__dirname, '../templates/template.handlebars'),
             root = 'Database',
             namespace = 'auto',
             imports = 'ormless',

@@ -8,8 +8,11 @@ cat > dist/cjs/package.json <<!EOF
 }
 !EOF
 
+cp -r src/templates dist/cjs
+
 cat > dist/esm/package.json <<!EOF
 {
     "type": "module"
 }
 !EOF
+cp -r src/templates dist/esm

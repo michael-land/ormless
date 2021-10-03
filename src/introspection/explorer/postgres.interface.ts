@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-empty-interface */
 /* eslint-disable @typescript-eslint/no-namespace */
-
+// 123
 export namespace Postgres {
   export namespace InformationSchema {
     export namespace Columns {
