@@ -1,19 +1,19 @@
-import { CamelCasePlugin, Kysely } from 'kysely';
 import { ORMLess, ORMLessQueryable } from '../src/ormless';
 
 /* eslint-disable @typescript-eslint/no-empty-interface */
 /* eslint-disable @typescript-eslint/no-namespace */
 
-export namespace db {
+export namespace Database {
   export namespace Actor {
-    export type TableName = 'actor';
+    export type Name = 'actor';
+    export type Column = keyof Model;
 
     export type PrimaryKeyConstriant = 'actor_pkey';
 
     export type UniqueConstriants = 'actor_pkey';
 
     export interface WhereUniqueInput {
-      actorPkey: 'actorId';
+      actorPkey: Pick<Model, 'actorId'>;
     }
 
     export interface Model {
@@ -30,14 +30,15 @@ export namespace db {
     export interface Select extends Required<Model> {}
   }
   export namespace Address {
-    export type TableName = 'address';
+    export type Name = 'address';
+    export type Column = keyof Model;
 
     export type PrimaryKeyConstriant = 'address_pkey';
 
     export type UniqueConstriants = 'address_pkey';
 
     export interface WhereUniqueInput {
-      addressPkey: 'addressId';
+      addressPkey: Pick<Model, 'addressId'>;
     }
 
     export interface Model {
@@ -58,14 +59,15 @@ export namespace db {
     export interface Select extends Required<Model> {}
   }
   export namespace Category {
-    export type TableName = 'category';
+    export type Name = 'category';
+    export type Column = keyof Model;
 
     export type PrimaryKeyConstriant = 'category_pkey';
 
     export type UniqueConstriants = 'category_pkey';
 
     export interface WhereUniqueInput {
-      categoryPkey: 'categoryId';
+      categoryPkey: Pick<Model, 'categoryId'>;
     }
 
     export interface Model {
@@ -81,14 +83,15 @@ export namespace db {
     export interface Select extends Required<Model> {}
   }
   export namespace City {
-    export type TableName = 'city';
+    export type Name = 'city';
+    export type Column = keyof Model;
 
     export type PrimaryKeyConstriant = 'city_pkey';
 
     export type UniqueConstriants = 'city_pkey';
 
     export interface WhereUniqueInput {
-      cityPkey: 'cityId';
+      cityPkey: Pick<Model, 'cityId'>;
     }
 
     export interface Model {
@@ -105,14 +108,15 @@ export namespace db {
     export interface Select extends Required<Model> {}
   }
   export namespace Country {
-    export type TableName = 'country';
+    export type Name = 'country';
+    export type Column = keyof Model;
 
     export type PrimaryKeyConstriant = 'country_pkey';
 
     export type UniqueConstriants = 'country_pkey';
 
     export interface WhereUniqueInput {
-      countryPkey: 'countryId';
+      countryPkey: Pick<Model, 'countryId'>;
     }
 
     export interface Model {
@@ -128,15 +132,16 @@ export namespace db {
     export interface Select extends Required<Model> {}
   }
   export namespace Customer {
-    export type TableName = 'customer';
+    export type Name = 'customer';
+    export type Column = keyof Model;
 
     export type PrimaryKeyConstriant = 'customer_pkey';
 
     export type UniqueConstriants = 'customer_email_uk' | 'customer_pkey';
 
     export interface WhereUniqueInput {
-      customerEmailUk: 'email';
-      customerPkey: 'customerId';
+      customerEmailUk: Pick<Model, 'email'>;
+      customerPkey: Pick<Model, 'customerId'>;
     }
 
     export interface Model {
@@ -159,14 +164,15 @@ export namespace db {
     export interface Select extends Required<Model> {}
   }
   export namespace Film {
-    export type TableName = 'film';
+    export type Name = 'film';
+    export type Column = keyof Model;
 
     export type PrimaryKeyConstriant = 'film_pkey';
 
     export type UniqueConstriants = 'film_pkey';
 
     export interface WhereUniqueInput {
-      filmPkey: 'filmId';
+      filmPkey: Pick<Model, 'filmId'>;
     }
 
     export interface Model {
@@ -193,14 +199,15 @@ export namespace db {
     export interface Select extends Required<Model> {}
   }
   export namespace FilmActor {
-    export type TableName = 'film_actor';
+    export type Name = 'film_actor';
+    export type Column = keyof Model;
 
     export type PrimaryKeyConstriant = 'film_actor_pkey';
 
     export type UniqueConstriants = 'film_actor_pkey';
 
     export interface WhereUniqueInput {
-      filmActorPkey: 'filmId' | 'actorId';
+      filmActorPkey: Pick<Model, 'filmId' | 'actorId'>;
     }
 
     export interface Model {
@@ -216,14 +223,15 @@ export namespace db {
     export interface Select extends Required<Model> {}
   }
   export namespace FilmCategory {
-    export type TableName = 'film_category';
+    export type Name = 'film_category';
+    export type Column = keyof Model;
 
     export type PrimaryKeyConstriant = 'film_category_pkey';
 
     export type UniqueConstriants = 'film_category_pkey';
 
     export interface WhereUniqueInput {
-      filmCategoryPkey: 'categoryId' | 'filmId';
+      filmCategoryPkey: Pick<Model, 'categoryId' | 'filmId'>;
     }
 
     export interface Model {
@@ -239,14 +247,15 @@ export namespace db {
     export interface Select extends Required<Model> {}
   }
   export namespace Inventory {
-    export type TableName = 'inventory';
+    export type Name = 'inventory';
+    export type Column = keyof Model;
 
     export type PrimaryKeyConstriant = 'inventory_pkey';
 
     export type UniqueConstriants = 'inventory_pkey';
 
     export interface WhereUniqueInput {
-      inventoryPkey: 'inventoryId';
+      inventoryPkey: Pick<Model, 'inventoryId'>;
     }
 
     export interface Model {
@@ -263,14 +272,15 @@ export namespace db {
     export interface Select extends Required<Model> {}
   }
   export namespace Language {
-    export type TableName = 'language';
+    export type Name = 'language';
+    export type Column = keyof Model;
 
     export type PrimaryKeyConstriant = 'language_pkey';
 
     export type UniqueConstriants = 'language_pkey';
 
     export interface WhereUniqueInput {
-      languagePkey: 'languageId';
+      languagePkey: Pick<Model, 'languageId'>;
     }
 
     export interface Model {
@@ -286,7 +296,8 @@ export namespace db {
     export interface Select extends Required<Model> {}
   }
   export namespace Payment {
-    export type TableName = 'payment';
+    export type Name = 'payment';
+    export type Column = keyof Model;
 
     export type PrimaryKeyConstriant = never;
 
@@ -310,7 +321,8 @@ export namespace db {
     export interface Select extends Required<Model> {}
   }
   export namespace PaymentP2020_01 {
-    export type TableName = 'payment_p2020_01';
+    export type Name = 'payment_p2020_01';
+    export type Column = keyof Model;
 
     export type PrimaryKeyConstriant = never;
 
@@ -334,7 +346,8 @@ export namespace db {
     export interface Select extends Required<Model> {}
   }
   export namespace PaymentP2020_02 {
-    export type TableName = 'payment_p2020_02';
+    export type Name = 'payment_p2020_02';
+    export type Column = keyof Model;
 
     export type PrimaryKeyConstriant = never;
 
@@ -358,7 +371,8 @@ export namespace db {
     export interface Select extends Required<Model> {}
   }
   export namespace PaymentP2020_03 {
-    export type TableName = 'payment_p2020_03';
+    export type Name = 'payment_p2020_03';
+    export type Column = keyof Model;
 
     export type PrimaryKeyConstriant = never;
 
@@ -382,7 +396,8 @@ export namespace db {
     export interface Select extends Required<Model> {}
   }
   export namespace PaymentP2020_04 {
-    export type TableName = 'payment_p2020_04';
+    export type Name = 'payment_p2020_04';
+    export type Column = keyof Model;
 
     export type PrimaryKeyConstriant = never;
 
@@ -406,7 +421,8 @@ export namespace db {
     export interface Select extends Required<Model> {}
   }
   export namespace PaymentP2020_05 {
-    export type TableName = 'payment_p2020_05';
+    export type Name = 'payment_p2020_05';
+    export type Column = keyof Model;
 
     export type PrimaryKeyConstriant = never;
 
@@ -430,7 +446,8 @@ export namespace db {
     export interface Select extends Required<Model> {}
   }
   export namespace PaymentP2020_06 {
-    export type TableName = 'payment_p2020_06';
+    export type Name = 'payment_p2020_06';
+    export type Column = keyof Model;
 
     export type PrimaryKeyConstriant = never;
 
@@ -454,14 +471,15 @@ export namespace db {
     export interface Select extends Required<Model> {}
   }
   export namespace Rental {
-    export type TableName = 'rental';
+    export type Name = 'rental';
+    export type Column = keyof Model;
 
     export type PrimaryKeyConstriant = 'rental_pkey';
 
     export type UniqueConstriants = 'rental_pkey';
 
     export interface WhereUniqueInput {
-      rentalPkey: 'rentalId';
+      rentalPkey: Pick<Model, 'rentalId'>;
     }
 
     export interface Model {
@@ -481,14 +499,15 @@ export namespace db {
     export interface Select extends Required<Model> {}
   }
   export namespace Staff {
-    export type TableName = 'staff';
+    export type Name = 'staff';
+    export type Column = keyof Model;
 
     export type PrimaryKeyConstriant = 'staff_pkey';
 
     export type UniqueConstriants = 'staff_pkey';
 
     export interface WhereUniqueInput {
-      staffPkey: 'staffId';
+      staffPkey: Pick<Model, 'staffId'>;
     }
 
     export interface Model {
@@ -512,14 +531,15 @@ export namespace db {
     export interface Select extends Required<Model> {}
   }
   export namespace Store {
-    export type TableName = 'store';
+    export type Name = 'store';
+    export type Column = keyof Model;
 
     export type PrimaryKeyConstriant = 'store_pkey';
 
     export type UniqueConstriants = 'store_pkey';
 
     export interface WhereUniqueInput {
-      storePkey: 'storeId';
+      storePkey: Pick<Model, 'storeId'>;
     }
 
     export interface Model {
@@ -537,7 +557,8 @@ export namespace db {
   }
 
   export namespace ActorInfo {
-    export type ViewName = 'actor_info';
+    export type Name = 'actor_info';
+    export type Column = keyof Model;
 
     export interface Model {
       actorId: number;
@@ -549,7 +570,8 @@ export namespace db {
     export interface Select extends Required<Model> {}
   }
   export namespace CustomerList {
-    export type ViewName = 'customer_list';
+    export type Name = 'customer_list';
+    export type Column = keyof Model;
 
     export interface Model {
       id: number;
@@ -566,7 +588,8 @@ export namespace db {
     export interface Select extends Required<Model> {}
   }
   export namespace FilmList {
-    export type ViewName = 'film_list';
+    export type Name = 'film_list';
+    export type Column = keyof Model;
 
     export interface Model {
       fid: number;
@@ -582,7 +605,8 @@ export namespace db {
     export interface Select extends Required<Model> {}
   }
   export namespace NicerButSlowerFilmList {
-    export type ViewName = 'nicer_but_slower_film_list';
+    export type Name = 'nicer_but_slower_film_list';
+    export type Column = keyof Model;
 
     export interface Model {
       fid: number;
@@ -598,7 +622,8 @@ export namespace db {
     export interface Select extends Required<Model> {}
   }
   export namespace SalesByFilmCategory {
-    export type ViewName = 'sales_by_film_category';
+    export type Name = 'sales_by_film_category';
+    export type Column = keyof Model;
 
     export interface Model {
       category: string;
@@ -608,7 +633,8 @@ export namespace db {
     export interface Select extends Required<Model> {}
   }
   export namespace SalesByStore {
-    export type ViewName = 'sales_by_store';
+    export type Name = 'sales_by_store';
+    export type Column = keyof Model;
 
     export interface Model {
       store: string;
@@ -619,7 +645,8 @@ export namespace db {
     export interface Select extends Required<Model> {}
   }
   export namespace StaffList {
-    export type ViewName = 'staff_list';
+    export type Name = 'staff_list';
+    export type Column = keyof Model;
 
     export interface Model {
       id: number;
@@ -638,142 +665,142 @@ export namespace db {
   export type MPAA_RATING = 'G' | 'PG' | 'PG-13' | 'R' | 'NC-17';
 }
 
-export interface Database {
-  actor: db.Actor.Select;
-  address: db.Address.Select;
-  category: db.Category.Select;
-  city: db.City.Select;
-  country: db.Country.Select;
-  customer: db.Customer.Select;
-  film: db.Film.Select;
-  filmActor: db.FilmActor.Select;
-  filmCategory: db.FilmCategory.Select;
-  inventory: db.Inventory.Select;
-  language: db.Language.Select;
-  payment: db.Payment.Select;
-  paymentP2020_01: db.PaymentP2020_01.Select;
-  paymentP2020_02: db.PaymentP2020_02.Select;
-  paymentP2020_03: db.PaymentP2020_03.Select;
-  paymentP2020_04: db.PaymentP2020_04.Select;
-  paymentP2020_05: db.PaymentP2020_05.Select;
-  paymentP2020_06: db.PaymentP2020_06.Select;
-  rental: db.Rental.Select;
-  staff: db.Staff.Select;
-  store: db.Store.Select;
-  actorInfo: db.ActorInfo.Select;
-  customerList: db.CustomerList.Select;
-  filmList: db.FilmList.Select;
-  nicerButSlowerFilmList: db.NicerButSlowerFilmList.Select;
-  salesByFilmCategory: db.SalesByFilmCategory.Select;
-  salesByStore: db.SalesByStore.Select;
-  staffList: db.StaffList.Select;
+export interface DatabaseSchema {
+  actor: Database.Actor.Select;
+  address: Database.Address.Select;
+  category: Database.Category.Select;
+  city: Database.City.Select;
+  country: Database.Country.Select;
+  customer: Database.Customer.Select;
+  film: Database.Film.Select;
+  filmActor: Database.FilmActor.Select;
+  filmCategory: Database.FilmCategory.Select;
+  inventory: Database.Inventory.Select;
+  language: Database.Language.Select;
+  payment: Database.Payment.Select;
+  paymentP2020_01: Database.PaymentP2020_01.Select;
+  paymentP2020_02: Database.PaymentP2020_02.Select;
+  paymentP2020_03: Database.PaymentP2020_03.Select;
+  paymentP2020_04: Database.PaymentP2020_04.Select;
+  paymentP2020_05: Database.PaymentP2020_05.Select;
+  paymentP2020_06: Database.PaymentP2020_06.Select;
+  rental: Database.Rental.Select;
+  staff: Database.Staff.Select;
+  store: Database.Store.Select;
+  actorInfo: Database.ActorInfo.Select;
+  customerList: Database.CustomerList.Select;
+  filmList: Database.FilmList.Select;
+  nicerButSlowerFilmList: Database.NicerButSlowerFilmList.Select;
+  salesByFilmCategory: Database.SalesByFilmCategory.Select;
+  salesByStore: Database.SalesByStore.Select;
+  staffList: Database.StaffList.Select;
 }
 
 export interface DatabaseMetadata {
   actor: {
-    unique: db.Actor.WhereUniqueInput;
-    insert: db.Actor.Insert;
-    update: db.Actor.Update;
+    unique: Database.Actor.WhereUniqueInput;
+    insert: Database.Actor.Insert;
+    update: Database.Actor.Update;
   };
   address: {
-    unique: db.Address.WhereUniqueInput;
-    insert: db.Address.Insert;
-    update: db.Address.Update;
+    unique: Database.Address.WhereUniqueInput;
+    insert: Database.Address.Insert;
+    update: Database.Address.Update;
   };
   category: {
-    unique: db.Category.WhereUniqueInput;
-    insert: db.Category.Insert;
-    update: db.Category.Update;
+    unique: Database.Category.WhereUniqueInput;
+    insert: Database.Category.Insert;
+    update: Database.Category.Update;
   };
   city: {
-    unique: db.City.WhereUniqueInput;
-    insert: db.City.Insert;
-    update: db.City.Update;
+    unique: Database.City.WhereUniqueInput;
+    insert: Database.City.Insert;
+    update: Database.City.Update;
   };
   country: {
-    unique: db.Country.WhereUniqueInput;
-    insert: db.Country.Insert;
-    update: db.Country.Update;
+    unique: Database.Country.WhereUniqueInput;
+    insert: Database.Country.Insert;
+    update: Database.Country.Update;
   };
   customer: {
-    unique: db.Customer.WhereUniqueInput;
-    insert: db.Customer.Insert;
-    update: db.Customer.Update;
+    unique: Database.Customer.WhereUniqueInput;
+    insert: Database.Customer.Insert;
+    update: Database.Customer.Update;
   };
   film: {
-    unique: db.Film.WhereUniqueInput;
-    insert: db.Film.Insert;
-    update: db.Film.Update;
+    unique: Database.Film.WhereUniqueInput;
+    insert: Database.Film.Insert;
+    update: Database.Film.Update;
   };
   filmActor: {
-    unique: db.FilmActor.WhereUniqueInput;
-    insert: db.FilmActor.Insert;
-    update: db.FilmActor.Update;
+    unique: Database.FilmActor.WhereUniqueInput;
+    insert: Database.FilmActor.Insert;
+    update: Database.FilmActor.Update;
   };
   filmCategory: {
-    unique: db.FilmCategory.WhereUniqueInput;
-    insert: db.FilmCategory.Insert;
-    update: db.FilmCategory.Update;
+    unique: Database.FilmCategory.WhereUniqueInput;
+    insert: Database.FilmCategory.Insert;
+    update: Database.FilmCategory.Update;
   };
   inventory: {
-    unique: db.Inventory.WhereUniqueInput;
-    insert: db.Inventory.Insert;
-    update: db.Inventory.Update;
+    unique: Database.Inventory.WhereUniqueInput;
+    insert: Database.Inventory.Insert;
+    update: Database.Inventory.Update;
   };
   language: {
-    unique: db.Language.WhereUniqueInput;
-    insert: db.Language.Insert;
-    update: db.Language.Update;
+    unique: Database.Language.WhereUniqueInput;
+    insert: Database.Language.Insert;
+    update: Database.Language.Update;
   };
   payment: {
-    unique: db.Payment.WhereUniqueInput;
-    insert: db.Payment.Insert;
-    update: db.Payment.Update;
+    unique: Database.Payment.WhereUniqueInput;
+    insert: Database.Payment.Insert;
+    update: Database.Payment.Update;
   };
   paymentP2020_01: {
-    unique: db.PaymentP2020_01.WhereUniqueInput;
-    insert: db.PaymentP2020_01.Insert;
-    update: db.PaymentP2020_01.Update;
+    unique: Database.PaymentP2020_01.WhereUniqueInput;
+    insert: Database.PaymentP2020_01.Insert;
+    update: Database.PaymentP2020_01.Update;
   };
   paymentP2020_02: {
-    unique: db.PaymentP2020_02.WhereUniqueInput;
-    insert: db.PaymentP2020_02.Insert;
-    update: db.PaymentP2020_02.Update;
+    unique: Database.PaymentP2020_02.WhereUniqueInput;
+    insert: Database.PaymentP2020_02.Insert;
+    update: Database.PaymentP2020_02.Update;
   };
   paymentP2020_03: {
-    unique: db.PaymentP2020_03.WhereUniqueInput;
-    insert: db.PaymentP2020_03.Insert;
-    update: db.PaymentP2020_03.Update;
+    unique: Database.PaymentP2020_03.WhereUniqueInput;
+    insert: Database.PaymentP2020_03.Insert;
+    update: Database.PaymentP2020_03.Update;
   };
   paymentP2020_04: {
-    unique: db.PaymentP2020_04.WhereUniqueInput;
-    insert: db.PaymentP2020_04.Insert;
-    update: db.PaymentP2020_04.Update;
+    unique: Database.PaymentP2020_04.WhereUniqueInput;
+    insert: Database.PaymentP2020_04.Insert;
+    update: Database.PaymentP2020_04.Update;
   };
   paymentP2020_05: {
-    unique: db.PaymentP2020_05.WhereUniqueInput;
-    insert: db.PaymentP2020_05.Insert;
-    update: db.PaymentP2020_05.Update;
+    unique: Database.PaymentP2020_05.WhereUniqueInput;
+    insert: Database.PaymentP2020_05.Insert;
+    update: Database.PaymentP2020_05.Update;
   };
   paymentP2020_06: {
-    unique: db.PaymentP2020_06.WhereUniqueInput;
-    insert: db.PaymentP2020_06.Insert;
-    update: db.PaymentP2020_06.Update;
+    unique: Database.PaymentP2020_06.WhereUniqueInput;
+    insert: Database.PaymentP2020_06.Insert;
+    update: Database.PaymentP2020_06.Update;
   };
   rental: {
-    unique: db.Rental.WhereUniqueInput;
-    insert: db.Rental.Insert;
-    update: db.Rental.Update;
+    unique: Database.Rental.WhereUniqueInput;
+    insert: Database.Rental.Insert;
+    update: Database.Rental.Update;
   };
   staff: {
-    unique: db.Staff.WhereUniqueInput;
-    insert: db.Staff.Insert;
-    update: db.Staff.Update;
+    unique: Database.Staff.WhereUniqueInput;
+    insert: Database.Staff.Insert;
+    update: Database.Staff.Update;
   };
   store: {
-    unique: db.Store.WhereUniqueInput;
-    insert: db.Store.Insert;
-    update: db.Store.Update;
+    unique: Database.Store.WhereUniqueInput;
+    insert: Database.Store.Insert;
+    update: Database.Store.Update;
   };
   actorInfo: {
     unique: never;
@@ -812,101 +839,95 @@ export interface DatabaseMetadata {
   };
 }
 
-export const db = new Kysely<Database>({
-  database: process.env.DATABASE_NAME!,
-  host: process.env.DATABASE_HOST!,
-  user: process.env.DATABASE_USER!,
-  password: process.env.DATABASE_PASSWORD!,
-  dialect: 'postgres',
-  plugins: [new CamelCasePlugin()],
-});
-
-export class ActorRepository extends ORMLess<Database, 'actor', DatabaseMetadata> {
+export class ActorRepository extends ORMLess<DatabaseSchema, DatabaseMetadata, 'actor'> {
   protected table = 'actor' as const;
 }
-export class AddressRepository extends ORMLess<Database, 'address', DatabaseMetadata> {
+export class AddressRepository extends ORMLess<DatabaseSchema, DatabaseMetadata, 'address'> {
   protected table = 'address' as const;
 }
-export class CategoryRepository extends ORMLess<Database, 'category', DatabaseMetadata> {
+export class CategoryRepository extends ORMLess<DatabaseSchema, DatabaseMetadata, 'category'> {
   protected table = 'category' as const;
 }
-export class CityRepository extends ORMLess<Database, 'city', DatabaseMetadata> {
+export class CityRepository extends ORMLess<DatabaseSchema, DatabaseMetadata, 'city'> {
   protected table = 'city' as const;
 }
-export class CountryRepository extends ORMLess<Database, 'country', DatabaseMetadata> {
+export class CountryRepository extends ORMLess<DatabaseSchema, DatabaseMetadata, 'country'> {
   protected table = 'country' as const;
 }
-export class CustomerRepository extends ORMLess<Database, 'customer', DatabaseMetadata> {
+export class CustomerRepository extends ORMLess<DatabaseSchema, DatabaseMetadata, 'customer'> {
   protected table = 'customer' as const;
 }
-export class FilmRepository extends ORMLess<Database, 'film', DatabaseMetadata> {
+export class FilmRepository extends ORMLess<DatabaseSchema, DatabaseMetadata, 'film'> {
   protected table = 'film' as const;
 }
-export class FilmActorRepository extends ORMLess<Database, 'filmActor', DatabaseMetadata> {
+export class FilmActorRepository extends ORMLess<DatabaseSchema, DatabaseMetadata, 'filmActor'> {
   protected table = 'filmActor' as const;
 }
-export class FilmCategoryRepository extends ORMLess<Database, 'filmCategory', DatabaseMetadata> {
+export class FilmCategoryRepository extends ORMLess<DatabaseSchema, DatabaseMetadata, 'filmCategory'> {
   protected table = 'filmCategory' as const;
 }
-export class InventoryRepository extends ORMLess<Database, 'inventory', DatabaseMetadata> {
+export class InventoryRepository extends ORMLess<DatabaseSchema, DatabaseMetadata, 'inventory'> {
   protected table = 'inventory' as const;
 }
-export class LanguageRepository extends ORMLess<Database, 'language', DatabaseMetadata> {
+export class LanguageRepository extends ORMLess<DatabaseSchema, DatabaseMetadata, 'language'> {
   protected table = 'language' as const;
 }
-export class PaymentRepository extends ORMLess<Database, 'payment', DatabaseMetadata> {
+export class PaymentRepository extends ORMLess<DatabaseSchema, DatabaseMetadata, 'payment'> {
   protected table = 'payment' as const;
 }
-export class PaymentP2020_01Repository extends ORMLess<Database, 'paymentP2020_01', DatabaseMetadata> {
+export class PaymentP2020_01Repository extends ORMLess<DatabaseSchema, DatabaseMetadata, 'paymentP2020_01'> {
   protected table = 'paymentP2020_01' as const;
 }
-export class PaymentP2020_02Repository extends ORMLess<Database, 'paymentP2020_02', DatabaseMetadata> {
+export class PaymentP2020_02Repository extends ORMLess<DatabaseSchema, DatabaseMetadata, 'paymentP2020_02'> {
   protected table = 'paymentP2020_02' as const;
 }
-export class PaymentP2020_03Repository extends ORMLess<Database, 'paymentP2020_03', DatabaseMetadata> {
+export class PaymentP2020_03Repository extends ORMLess<DatabaseSchema, DatabaseMetadata, 'paymentP2020_03'> {
   protected table = 'paymentP2020_03' as const;
 }
-export class PaymentP2020_04Repository extends ORMLess<Database, 'paymentP2020_04', DatabaseMetadata> {
+export class PaymentP2020_04Repository extends ORMLess<DatabaseSchema, DatabaseMetadata, 'paymentP2020_04'> {
   protected table = 'paymentP2020_04' as const;
 }
-export class PaymentP2020_05Repository extends ORMLess<Database, 'paymentP2020_05', DatabaseMetadata> {
+export class PaymentP2020_05Repository extends ORMLess<DatabaseSchema, DatabaseMetadata, 'paymentP2020_05'> {
   protected table = 'paymentP2020_05' as const;
 }
-export class PaymentP2020_06Repository extends ORMLess<Database, 'paymentP2020_06', DatabaseMetadata> {
+export class PaymentP2020_06Repository extends ORMLess<DatabaseSchema, DatabaseMetadata, 'paymentP2020_06'> {
   protected table = 'paymentP2020_06' as const;
 }
-export class RentalRepository extends ORMLess<Database, 'rental', DatabaseMetadata> {
+export class RentalRepository extends ORMLess<DatabaseSchema, DatabaseMetadata, 'rental'> {
   protected table = 'rental' as const;
 }
-export class StaffRepository extends ORMLess<Database, 'staff', DatabaseMetadata> {
+export class StaffRepository extends ORMLess<DatabaseSchema, DatabaseMetadata, 'staff'> {
   protected table = 'staff' as const;
 }
-export class StoreRepository extends ORMLess<Database, 'store', DatabaseMetadata> {
+export class StoreRepository extends ORMLess<DatabaseSchema, DatabaseMetadata, 'store'> {
   protected table = 'store' as const;
 }
-
-export class ActorInfoRepository extends ORMLessQueryable<Database, 'actorInfo', DatabaseMetadata> {
+export class ActorInfoRepository extends ORMLessQueryable<DatabaseSchema, DatabaseMetadata, 'actorInfo'> {
   protected table = 'actorInfo' as const;
 }
-export class CustomerListRepository extends ORMLessQueryable<Database, 'customerList', DatabaseMetadata> {
+export class CustomerListRepository extends ORMLessQueryable<DatabaseSchema, DatabaseMetadata, 'customerList'> {
   protected table = 'customerList' as const;
 }
-export class FilmListRepository extends ORMLessQueryable<Database, 'filmList', DatabaseMetadata> {
+export class FilmListRepository extends ORMLessQueryable<DatabaseSchema, DatabaseMetadata, 'filmList'> {
   protected table = 'filmList' as const;
 }
 export class NicerButSlowerFilmListRepository extends ORMLessQueryable<
-  Database,
-  'nicerButSlowerFilmList',
-  DatabaseMetadata
+  DatabaseSchema,
+  DatabaseMetadata,
+  'nicerButSlowerFilmList'
 > {
   protected table = 'nicerButSlowerFilmList' as const;
 }
-export class SalesByFilmCategoryRepository extends ORMLessQueryable<Database, 'salesByFilmCategory', DatabaseMetadata> {
+export class SalesByFilmCategoryRepository extends ORMLessQueryable<
+  DatabaseSchema,
+  DatabaseMetadata,
+  'salesByFilmCategory'
+> {
   protected table = 'salesByFilmCategory' as const;
 }
-export class SalesByStoreRepository extends ORMLessQueryable<Database, 'salesByStore', DatabaseMetadata> {
+export class SalesByStoreRepository extends ORMLessQueryable<DatabaseSchema, DatabaseMetadata, 'salesByStore'> {
   protected table = 'salesByStore' as const;
 }
-export class StaffListRepository extends ORMLessQueryable<Database, 'staffList', DatabaseMetadata> {
+export class StaffListRepository extends ORMLessQueryable<DatabaseSchema, DatabaseMetadata, 'staffList'> {
   protected table = 'staffList' as const;
 }

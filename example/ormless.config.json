@@ -1,6 +1,22 @@
 {
   "database": {
-    "public": {}
+    "public": {
+      "actor": {},
+      "address": {},
+      "category": {},
+      "city": {},
+      "country": {},
+      "customer": {},
+      "film": {},
+      "film_actor": {},
+      "film_category": {},
+      "inventory": {},
+      "language": {},
+      "payment": {},
+      "rental": {},
+      "staff": {},
+      "store": {}
+    }
   },
   "paths": ["public"],
   "connection": {
@@ -11,10 +27,9 @@
   },
   "generate": {
     "database": {
-      "root": "db",
+      "repository": true,
       "folder": "example",
-      "template": "./src/templates/kysely.handlebars"
+      "imports": "../src/ormless"
     }
-  },
-  "import": "../src/ormless"
+  }
 }
