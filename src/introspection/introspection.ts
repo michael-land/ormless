@@ -1,63 +1,21 @@
 import * as cases from 'change-case';
 import * as fs from 'fs';
 import * as handlebars from 'handlebars';
-import { KyselyConfig } from 'kysely';
-import { asserts } from '../utils';
-import { Explorer } from './explorer';
+import { guard } from '../utils';
+import { Explorer, ExplorerConfig } from './explorer';
 
-interface NameMap {
-  original: string;
-  camelCase: string;
-  constantCase: string;
-  dotCase: string;
-  paramCase: string;
-  pascalCase: string;
-  snakeCase: string;
-}
-
-interface SchemaModel {
-  schemaName: NameMap;
-  tables: TableModel[];
-  enums: EnumModel[];
-  isInPath: boolean;
-}
-
-interface EnumModel {
-  enumName: NameMap;
-  enumValues: string[];
-}
-
-interface TableModel {
-  tableName: NameMap;
-  tableType: string;
-  isView: boolean;
-  hasPrimaryKey: boolean;
-  columns: TableColumnModel[];
-  constraints: TableConstrainModel[];
-  pk: string;
-}
-
-interface TableConstrainModel {
-  constraintName: NameMap;
-  constraintType: string;
-}
-
-interface TableColumnModel {
-  columnName: NameMap;
-  columnType: string;
-  isOptional: boolean;
-  isNullable: boolean;
-  isIdentity: boolean;
-  isGenerated: boolean;
-  isArray: boolean;
-  isEnum: boolean;
-  isPrimaryKey: boolean;
-}
-
-export interface IntrospectionConfig extends Omit<KyselyConfig, 'plugins'> {
-  schemas: string[];
-  template: { client?: string; type: string };
+export interface IntrospectionConfig extends ExplorerConfig {
+  paths: string[];
   types: Record<string, string>;
+  generate: Record<
+    string,
+    {
+      template: string;
+      folder: string;
+      root?: string;
+      namespace?: 'always' | 'never' | 'auto';
+    }
+  >;
 }
 
 export class Introspection {
@@ -71,91 +29,131 @@ export class Introspection {
     const explorer = new Explorer(this.#config);
     const definitions = await explorer.getDefinitions();
 
-    const schemas: SchemaModel[] = this.#config.schemas.map((schema) => ({
-      isInPath: schema === 'public',
+    const schemas: SchemaModel[] = Object.keys(this.#config.database).map((schema) => ({
+      isInSearchPath: this.#config.paths.includes(schema),
       schemaName: this.convertStringCase(schema),
-      enums: [],
-      tables: [],
-    }));
-
-    for (const table of definitions.tables) {
-      const schema = schemas.find((schema) => schema.schemaName.original === table.tableSchema);
-      asserts.assertNonNullable(schema);
-
-      const constraints = definitions.constraints.filter(
-        (constraint) =>
-          constraint.constraintSchema === table.tableSchema && constraint.constraintTable === table.tableName
-      );
-
-      const columns = definitions.columns
-        .filter((column) => column.tableSchema === table.tableSchema && column.tableName === table.tableName)
-        .map((column) => {
-          let typescriptType = this.getTypescriptType(column.columnType);
-
-          if (column.isEnum) {
-            typescriptType = cases.constantCase(typescriptType);
-          }
-          if (column.isArray) {
-            typescriptType = `${typescriptType}[]`;
-          }
-
-          return {
-            columnName: this.convertStringCase(column.columnName),
-            columnType: typescriptType,
-            isOptional: !!column.columnDefault || column.isIdentity || column.isGenerated,
-            isNullable: column.isNullable,
-            isIdentity: column.isIdentity,
-            isGenerated: column.isGenerated,
-            isArray: column.isArray,
-            isEnum: column.isEnum,
-            isPrimaryKey: column.isPrimaryKey,
-          };
-        });
-      const primaryColumns = columns.filter((x) => x.isPrimaryKey);
-      schema.tables.push({
-        tableName: this.convertStringCase(table.tableName),
-        tableType: table.tableType,
-        isView: table.tableType === 'VIEW',
-        hasPrimaryKey: constraints.some((c) => c.constraintType === 'p'),
-        constraints: constraints.map((c) => ({
-          constraintName: this.convertStringCase(c.constraintName),
-          constraintType: c.constraintType,
-        })),
-        pk: primaryColumns.length
-          ? primaryColumns
-              .map((x) => x.columnName.camelCase)
-              .map((x) => `'${x}'`)
-              .join('|')
-          : 'never',
-        columns,
-      });
-    }
-
-    for (const enums of definitions.enums) {
-      const schema = schemas.find((schema) => schema.schemaName.original === enums.enumSchema);
-      asserts.assertNonNullable(schema);
-
-      schema.enums.push({
+      schemaEnums: definitions.enums.map((enums) => ({
         enumName: this.convertStringCase(enums.enumName),
         enumValues: enums.enumValues,
-      });
-    }
+      })),
+
+      schemaTables: definitions.tables
+        .filter((table) => table.tableType === 'BASE TABLE')
+        .map((table) => {
+          const schemaSetting = this.#config.database[table.tableSchema];
+
+          if (schemaSetting === false) {
+            return;
+          }
+
+          const tableSetting = schemaSetting.tables?.[table.tableName];
+
+          if (tableSetting === false) {
+            return;
+          }
+
+          const constraints = definitions.constraints
+            .map((constraint) => {
+              const constraintSetting = tableSetting?.constriants?.[constraint.constraintName];
+              if (constraintSetting === false) {
+                return;
+              }
+              return {
+                constraintName: this.convertStringCase(constraint.constraintName),
+                constraintAbbr: constraintSetting?.name,
+                constraintType: constraint.columns
+                  .map((x) => cases.camelCase(x))
+                  .map((x) => `'${x}'`)
+                  .join('|'),
+              };
+            })
+            .filter(guard.isDefined);
+
+          const columns = definitions.columns
+            .filter((column) => column.tableSchema === table.tableSchema && column.tableName === table.tableName)
+            .map((column) => {
+              let typescriptType = this.getTypescriptType(column.columnType);
+
+              if (column.isEnum) {
+                typescriptType = cases.constantCase(typescriptType);
+              }
+              if (column.isArray) {
+                typescriptType = `${typescriptType}[]`;
+              }
+
+              return {
+                columnName: this.convertStringCase(column.columnName),
+                columnType: typescriptType,
+                isOptional: !!column.columnDefault || column.isIdentity || column.isGenerated,
+                isNullable: column.isNullable,
+                isIdentity: column.isIdentity,
+                isGenerated: column.isGenerated,
+                isArray: column.isArray,
+                isEnum: column.isEnum,
+                isPrimaryKey: column.isPrimaryKey,
+              };
+            });
+
+          return {
+            tableName: this.convertStringCase(table.tableName),
+            tablePrimaryConstraints: constraints.filter((c) => c.constraintType === 'p'),
+            tableUniqueConstraints: constraints.filter((c) => c.constraintType === 'u' || c.constraintType === 'p'),
+            tableForeignConstraints: constraints.filter((c) => c.constraintType === 'f'),
+            tableColumns: columns,
+          };
+        })
+        .filter(guard.isDefined),
+
+      schemaViews: definitions.tables
+        .filter((table) => table.tableType === 'VIEW')
+        .map((table) => {
+          const columns = definitions.columns
+            .filter((column) => column.tableSchema === table.tableSchema && column.tableName === table.tableName)
+            .map((column) => {
+              let typescriptType = this.getTypescriptType(column.columnType);
+
+              if (column.isEnum) {
+                typescriptType = cases.constantCase(typescriptType);
+              }
+              if (column.isArray) {
+                typescriptType = `${typescriptType}[]`;
+              }
+
+              return {
+                columnName: this.convertStringCase(column.columnName),
+                columnType: typescriptType,
+                isOptional: !!column.columnDefault || column.isIdentity || column.isGenerated,
+                isNullable: column.isNullable,
+                isIdentity: column.isIdentity,
+                isGenerated: column.isGenerated,
+                isArray: column.isArray,
+                isEnum: column.isEnum,
+                isPrimaryKey: column.isPrimaryKey,
+              };
+            });
+
+          return {
+            viewName: this.convertStringCase(table.tableName),
+            viewColumns: columns,
+          };
+        })
+        .filter(guard.isDefined),
+    }));
 
     const templates = await Promise.all(
-      Object.entries(this.#config.template).map(
-        ([key, value]) =>
+      Object.entries(this.#config.generate).map(
+        ([key, { template, root = 'Database' }]) =>
           new Promise<[string, string]>((resolve, reject) =>
-            fs.readFile(value, { encoding: 'utf-8' }, (err, data) => {
+            fs.readFile(template, { encoding: 'utf-8' }, (err, data) => {
               if (err) {
                 reject(err);
               } else {
-                resolve([key, handlebars.compile(data)({ schemas })]);
+                resolve([key, handlebars.compile(data)({ schemas, root })]);
               }
             })
           )
       )
     );
-    console.log(Object.fromEntries(templates));
     return Object.fromEntries(templates);
   }
 
@@ -236,4 +234,58 @@ export class Introspection {
       snakeCase: cases.snakeCase(value),
     };
   }
+}
+
+interface NameMap {
+  original: string;
+  camelCase: string;
+  constantCase: string;
+  dotCase: string;
+  paramCase: string;
+  pascalCase: string;
+  snakeCase: string;
+}
+
+interface SchemaModel {
+  schemaName: NameMap;
+  isInSearchPath: boolean;
+  schemaTables: TableModel[];
+  schemaViews: ViewModel[];
+  schemaEnums: EnumModel[];
+}
+
+interface EnumModel {
+  enumName: NameMap;
+  enumValues: string[];
+}
+
+interface ViewModel {
+  viewName: NameMap;
+  viewColumns: TableColumnModel[];
+}
+
+interface TableModel {
+  tableName: NameMap;
+  tablePrimaryConstraints: TableConstrainModel[];
+  tableForeignConstraints: TableConstrainModel[];
+  tableUniqueConstraints: TableConstrainModel[];
+  tableColumns: TableColumnModel[];
+}
+
+interface TableConstrainModel {
+  constraintName: NameMap;
+  constraintAbbr: string | undefined;
+  constraintType: string;
+}
+
+interface TableColumnModel {
+  columnName: NameMap;
+  columnType: string;
+  isOptional: boolean;
+  isNullable: boolean;
+  isIdentity: boolean;
+  isGenerated: boolean;
+  isArray: boolean;
+  isEnum: boolean;
+  isPrimaryKey: boolean;
 }

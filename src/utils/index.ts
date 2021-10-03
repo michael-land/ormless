@@ -1,1 +1,1 @@
-export * as asserts from './asserts';
+export * as guard from './gurad';

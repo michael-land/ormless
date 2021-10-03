@@ -1,8 +1,16 @@
-interface Database {
+export interface {{root}} {
   {{#each schemas}}
-    {{#each tables}}
-      '{{#unless ../isInPath}}{{../schemaName.camelCase}}.{{/unless}}{{tableName.camelCase}}': {
-        {{#each columns}}
+    {{#each schemaTables}}
+      '{{#unless ../isInSearchPath}}{{../schemaName.camelCase}}.{{/unless}}{{tableName.camelCase}}': {
+        {{#each tableColumns}}
+        '{{columnName.camelCase}}': {{columnType}}{{#if nullable}} | null{{/if}};
+        {{/each}} 
+      }
+    {{/each}}
+
+     {{#each schemaViews}}
+      '{{#unless ../isInSearchPath}}{{../schemaName.camelCase}}.{{/unless}}{{viewName.camelCase}}': {
+        {{#each viewColumns}}
         '{{columnName.camelCase}}': {{columnType}}{{#if nullable}} | null{{/if}};
         {{/each}} 
       }

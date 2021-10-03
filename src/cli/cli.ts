@@ -1,10 +1,9 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import * as prettier from 'prettier';
-import { Introspection, IntrospectionConfig } from '../introspection';
+import { Introspection, IntrospectionConfig } from '../introspection/introspection';
 
 export interface CliConfig extends IntrospectionConfig {
-  folder?: string;
   prettier?: prettier.RequiredOptions;
 }
 
@@ -13,8 +12,9 @@ export async function cli(config: CliConfig) {
   const output = await introspection.introspect();
 
   return Object.entries(output).map(([key, value]) => {
+    const setting = config.generate[key];
     const fileName = `${key}.ts`;
-    const directory = config.folder ?? '.';
+    const directory = setting.folder ?? '.';
     const outFile = path.join(directory, fileName);
 
     fs.writeFileSync(

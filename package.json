@@ -18,6 +18,7 @@
     "build:cjs": "tsc -p tsconfig-cjs.json",
     "dev": "node -r ts-node/register -r dotenv/config scratchpad/demo",
     "db:pull": "node -r ts-node/register -r dotenv/config scratchpad/introspect",
+    "db:pull-pg-metadata": "node -r ts-node/register -r dotenv/config scratchpad/introspect-pg-metadata",
     "db:generate": "node -r ts-node/register -r dotenv/config src/cli",
     "prepare": "husky install"
   },
