@@ -38,6 +38,10 @@ export async function cli(config: CliConfig = argvConfig) {
       const directory = setting.folder ?? '.';
       const outFile = path.join(directory, fileName);
 
+      if (!fs.existsSync(directory)) {
+        fs.mkdirSync(directory, { recursive: true });
+      }
+
       fs.writeFileSync(outFile, prettier.format(value, { parser: 'typescript', ...prettierConfig }));
     })
   );

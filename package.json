@@ -1,6 +1,6 @@
 {
   "name": "ormless",
-  "version": "0.0.3",
+  "version": "0.0.8",
   "bin": "./bin/ormless",
   "description": "Type safe SQL shortcuts based on kysely",
   "main": "dist/cjs/index.js",
@@ -12,6 +12,7 @@
     }
   },
   "scripts": {
+    "prepublishOnly": "npm run build",
     "prebuild": "rm -rf dist",
     "postbuild": "./scripts/postbuild",
     "build": "npm run build:esm && npm run build:cjs",

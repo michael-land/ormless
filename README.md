@@ -17,7 +17,61 @@ MySQL and sqlite support will be added once Kysely support them. Kysely also has
 
 # Example
 
-[Introspect](https://github.com/xiaoyu-tamu/ormless/blob/main/example/database.ts)
+ormless.config.json
+
+```json
+{
+  "database": {
+    "information_schema": {
+      "tables": {
+        "tables": {},
+        "table_constraints": {},
+        "key_column_usage": {},
+        "columns": {},
+        "constraint_column_usage": {}
+      }
+    },
+    "pg_catalog": {
+      "tables": {
+        "pg_constraint": {},
+        "pg_enum": {},
+        "pg_type": {},
+        "pg_namespace": {}
+      }
+    }
+  },
+  "paths": ["information_schema", "pg_catalog"],
+  "connection": {
+    "dialect": "postgres",
+    "database": "postgres",
+    "host": "localhost",
+    "user": "michael"
+  },
+  "generate": {
+    "postgres.interface": {
+      "root": "Postgres",
+      "folder": "src/introspection/explorer"
+    }
+  },
+  "types": {
+    "regproc": "string",
+    "pg_node_tree": "string",
+    "aclitem": "string",
+    "oidvector": "string",
+    "pg_lsn": "string",
+    "xid": "string",
+    "int2vector": "string",
+    "anyarray": "string",
+    "regtype": "string",
+    "pg_ndistinct": "string",
+    "pg_dependencies": "string",
+    "pg_mcv_list": "string"
+  },
+  "import": "../src/ormless"
+}
+```
+
+[Introspect Result](https://github.com/xiaoyu-tamu/ormless/blob/main/example/database.ts)
 
 [Generate Repository Client](https://github.com/xiaoyu-tamu/ormless/blob/main/example/index.ts)
 
