@@ -13,17 +13,17 @@ enum PgTypeType {
 
 export class PostgresExplorer implements ExplorerMethods<PostgresSchema> {
   readonly #includedSchemas: string[];
-  readonly #excludedTables: string[];
+  readonly #includedTables: string[];
 
   constructor({ database }: Pick<ExplorerConfig, 'database'>) {
     this.#includedSchemas = Object.keys(database);
-    this.#excludedTables = [
+    this.#includedTables = [
       ...new Set(
         Object.values(database)
           .filter(guard.isObject)
           .map((x) => x.tables)
           .filter(guard.isDefined)
-          .flatMap((x) => Object.entries(x).map(([k, v]) => (v === false ? k : undefined)))
+          .flatMap((x) => Object.entries(x).map(([k, v]) => (v !== false ? k : undefined)))
           .filter(guard.isDefined)
       ),
     ];
@@ -38,8 +38,8 @@ export class PostgresExplorer implements ExplorerMethods<PostgresSchema> {
     if (this.#includedSchemas.length) {
       qb = qb.where('tableSchema', 'in', this.#includedSchemas);
     }
-    if (this.#excludedTables.length) {
-      qb = qb.where('tableName', 'not in', this.#excludedTables);
+    if (this.#includedTables.length) {
+      qb = qb.where('tableName', 'in', this.#includedTables);
     }
     return qb.execute();
   }
@@ -65,8 +65,8 @@ export class PostgresExplorer implements ExplorerMethods<PostgresSchema> {
     if (this.#includedSchemas.length) {
       qb = qb.where('tableSchema', 'in', this.#includedSchemas);
     }
-    if (this.#excludedTables.length) {
-      qb = qb.where('tableName', 'not in', this.#excludedTables);
+    if (this.#includedTables.length) {
+      qb = qb.where('tableName', 'in', this.#includedTables);
     }
 
     const constraints = await qb.execute();
@@ -118,8 +118,8 @@ export class PostgresExplorer implements ExplorerMethods<PostgresSchema> {
     if (this.#includedSchemas.length) {
       qbConstraints = qbConstraints.where('tableConstraints.tableSchema', 'in', this.#includedSchemas);
     }
-    if (this.#excludedTables.length) {
-      qbConstraints = qbConstraints.where('tableConstraints.tableName', 'not in', this.#excludedTables);
+    if (this.#includedTables.length) {
+      qbConstraints = qbConstraints.where('tableConstraints.tableName', 'in', this.#includedTables);
     }
 
     const constraints = await qbConstraints.execute();
@@ -161,8 +161,8 @@ export class PostgresExplorer implements ExplorerMethods<PostgresSchema> {
     if (this.#includedSchemas.length) {
       qbConstraints = qbConstraints.where('tableSchema', 'in', this.#includedSchemas);
     }
-    if (this.#excludedTables.length) {
-      qbConstraints = qbConstraints.where('tableName', 'not in', this.#excludedTables);
+    if (this.#includedTables.length) {
+      qbConstraints = qbConstraints.where('tableName', 'in', this.#includedTables);
     }
 
     const columns = await qbColumns.execute();
