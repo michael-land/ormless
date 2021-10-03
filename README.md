@@ -66,8 +66,7 @@ ormless.config.json
     "pg_ndistinct": "string",
     "pg_dependencies": "string",
     "pg_mcv_list": "string"
-  },
-  "import": "../src/ormless"
+  }
 }
 ```
 
