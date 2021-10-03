@@ -9,9 +9,16 @@ Features:
 
 # Installation
 
+
 Ormless currently only works on postgres.
 
 MySQL and sqlite support will be added once Kysely support them. Kysely also has a simple interface for [third-party dialects](https://koskimas.github.io/kysely/interfaces/Dialect.html).
+
+if you only need both interfaces and shortcut functions.
+`npm install ormless@latest`
+
+if you only need generate TypeScript interfaces from a SQL database.
+`npx ormless@latest`
 
 \*\* This library is still work in progress and so does Kysely.
 
