@@ -67,7 +67,7 @@ ormless.config.json
 
 [Introspect Result](https://github.com/xiaoyu-tamu/ormless/blob/main/example/database.ts)
 
-[Generate Repository Client](https://github.com/xiaoyu-tamu/ormless/blob/main/example/index.ts)
+[Usage](https://github.com/xiaoyu-tamu/ormless/blob/main/example/index.ts)
 
 # Build-in Shortcuts
 
