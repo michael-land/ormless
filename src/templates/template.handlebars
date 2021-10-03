@@ -1,0 +1,65 @@
+{{#if repository}}
+import { ORMLess, ORMLessQueryable } from '{{imports}}';
+
+{{/if}}
+/* eslint-disable @typescript-eslint/no-empty-interface */
+/* eslint-disable @typescript-eslint/no-namespace */
+
+
+export namespace {{root}} {
+  {{#if withNamespace}}
+    {{#each schemas as |schema|}}
+    export namespace {{schemaName.pascalCase}} {
+      {{> generateSchema schema }}
+    }
+    {{/each}}
+  {{else}}
+    {{#each schemas as |schema|}}
+      {{> generateSchema schema }}
+    {{/each}}
+  {{/if}}
+}
+
+export interface {{root}}Schema {
+  {{#each schemas}}
+    {{#each schemaTables}}
+      '{{#unless ../isInSearchPath}}{{../schemaName.camelCase}}.{{/unless}}{{tableName.camelCase}}': {{../../root}}.{{#if ../../withNamespace}}{{../schemaName.pascalCase}}.{{/if}}{{tableName.pascalCase}}.Select
+    {{/each}}
+    {{#each schemaViews}}
+      '{{#unless ../isInSearchPath}}{{../schemaName.camelCase}}.{{/unless}}{{viewName.camelCase}}': {{../../root}}.{{#if ../../withNamespace}}{{../schemaName.pascalCase}}.{{/if}}{{viewName.pascalCase}}.Select
+    {{/each}}
+  {{/each}}
+}
+
+{{#if repository}}
+export interface {{root}}Metadata {
+  {{#each schemas}}
+    {{#each schemaTables}}
+      '{{#unless ../isInSearchPath}}{{../schemaName.camelCase}}.{{/unless}}{{tableName.camelCase}}': {
+        unique: {{../../root}}.{{#if ../../withNamespace}}{{../schemaName.pascalCase}}.{{/if}}{{tableName.pascalCase}}.WhereUniqueInput,
+        insert: {{../../root}}.{{#if ../../withNamespace}}{{../schemaName.pascalCase}}.{{/if}}{{tableName.pascalCase}}.Insert,
+        update: {{../../root}}.{{#if ../../withNamespace}}{{../schemaName.pascalCase}}.{{/if}}{{tableName.pascalCase}}.Update
+      }
+    {{/each}}
+    {{#each schemaViews}}
+      '{{#unless ../isInSearchPath}}{{../schemaName.camelCase}}.{{/unless}}{{viewName.camelCase}}': {
+        unique: never,
+        insert: never,
+        update: never
+      }
+    {{/each}}
+  {{/each}}
+}
+{{/if}}
+
+{{#if repository}}
+{{#each schemas}}
+  {{#each schemaTables as |table| }}
+    {{> generateTableRepository table=table root=../../root }}
+  {{/each}}
+
+  {{#each schemaViews as |view| }}
+    {{> generateViewRepository view=view root=../../root }}
+  {{/each}}
+{{/each}}
+{{/if}}

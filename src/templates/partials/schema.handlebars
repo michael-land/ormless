@@ -1,0 +1,64 @@
+{{!-- Tables --}}
+{{#each schemaTables}}
+  export namespace {{tableName.pascalCase}} {
+    export type Name = '{{tableName.original}}';
+    export type Column = keyof Model;
+
+    export type PrimaryKeyConstriant = 
+      {{#each tablePrimaryConstraints}}
+      | '{{constraintName.original}}'
+      {{else}}
+        never
+      {{/each}};
+
+    export type UniqueConstriants = 
+      {{#each tableUniqueConstraints}}
+      | '{{constraintName.original}}'
+      {{else}}
+        never
+      {{/each}};
+
+
+    export interface WhereUniqueInput {
+      {{#each tableUniqueConstraints}}
+      {{#if alias}}{{alias}}{{else}}{{constraintName.camelCase}}{{/if}}: Pick<Model, {{{constraintTypescriptType}}}>
+      {{/each}}
+    }
+
+    export interface Model {
+      {{#each tableColumns}}
+      '{{columnName.camelCase}}'{{#if isOptional}}?{{/if}}: {{columnType}}{{#if nullable}} | null{{/if}};
+      {{/each}}
+    }
+
+    export interface Insert extends Model {}
+
+    export interface Update extends Partial<Insert>{}
+
+    export interface Select extends Required<Model> {}
+  }
+{{/each}}
+
+{{!-- Views --}}
+{{#each schemaViews}}
+  export namespace {{viewName.pascalCase}} {
+  export type Name = '{{viewName.original}}';
+  export type Column = keyof Model;
+
+  export interface Model {
+    {{#each viewColumns}}
+    '{{columnName.camelCase}}'{{#if isOptional}}?{{/if}}: {{columnType}}{{#if nullable}} | null{{/if}};
+    {{/each}}
+  }
+
+  export interface Select extends Required<Model> {}
+  }
+  {{/each}}
+
+  {{!-- Enums --}}
+  {{#each schemaEnums}}
+  export type {{enumName.constantCase}} =
+    {{#each enumValues }}
+    | '{{this}}'
+    {{/each}}
+{{/each}}

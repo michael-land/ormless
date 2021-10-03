@@ -13,7 +13,9 @@ export interface IntrospectionConfig extends ExplorerConfig {
       template: string;
       folder: string;
       root?: string;
+      imports?: string;
       namespace?: 'always' | 'never' | 'auto';
+      repository?: boolean;
     }
   >;
 }
@@ -29,15 +31,20 @@ export class Introspection {
     const explorer = new Explorer(this.#config);
     const definitions = await explorer.getDefinitions();
 
+    console.log(definitions.tables);
+
     const schemas: SchemaModel[] = Object.keys(this.#config.database).map((schema) => ({
       isInSearchPath: this.#config.paths.includes(schema),
       schemaName: this.convertStringCase(schema),
-      schemaEnums: definitions.enums.map((enums) => ({
-        enumName: this.convertStringCase(enums.enumName),
-        enumValues: enums.enumValues,
-      })),
+      schemaEnums: definitions.enums
+        .filter((enums) => enums.enumSchema === schema)
+        .map((enums) => ({
+          enumName: this.convertStringCase(enums.enumName),
+          enumValues: enums.enumValues,
+        })),
 
       schemaTables: definitions.tables
+        .filter((table) => table.tableSchema === schema)
         .filter((table) => table.tableType === 'BASE TABLE')
         .map((table) => {
           const schemaSetting = this.#config.database[table.tableSchema];
@@ -53,10 +60,8 @@ export class Introspection {
           }
 
           const constraints = definitions.constraints
-            .filter(
-              (constraint) =>
-                constraint.constraintSchema === table.tableSchema && constraint.constraintTable === table.tableName
-            )
+            .filter((constraint) => constraint.constraintSchema === table.tableSchema)
+            .filter((constraint) => constraint.constraintTable === table.tableName)
             .map((constraint) => {
               const constraintSetting = tableSetting?.constriants?.[constraint.constraintName];
               if (constraintSetting === false) {
@@ -75,7 +80,8 @@ export class Introspection {
             .filter(guard.isDefined);
 
           const columns = definitions.columns
-            .filter((column) => column.tableSchema === table.tableSchema && column.tableName === table.tableName)
+            .filter((column) => column.tableSchema === table.tableSchema)
+            .filter((column) => column.tableName === table.tableName)
             .map((column) => {
               let typescriptType = this.getTypescriptType(column.columnType);
 
@@ -110,6 +116,7 @@ export class Introspection {
         .filter(guard.isDefined),
 
       schemaViews: definitions.tables
+        .filter((table) => table.tableSchema === schema)
         .filter((table) => table.tableType === 'VIEW')
         .map((table) => {
           const columns = definitions.columns
@@ -145,9 +152,31 @@ export class Introspection {
         .filter(guard.isDefined),
     }));
 
+    handlebars.registerPartial(
+      'generateSchema',
+      fs.readFileSync('./src/templates/partials/schema.handlebars', 'utf-8')
+    );
+    handlebars.registerPartial(
+      'generateTableRepository',
+      fs.readFileSync('./src/templates/partials/table-repository.handlebars', 'utf-8')
+    );
+    handlebars.registerPartial(
+      'generateViewRepository',
+      fs.readFileSync('./src/templates/partials/view-repository.handlebars', 'utf-8')
+    );
+
     const templates = await Promise.all(
       Object.entries(this.#config.generate).map(
-        ([key, { template, root = 'Database', namespace = 'auto' }]) =>
+        ([
+          key,
+          {
+            template = './src/templates/template.handlebars',
+            root = 'Database',
+            namespace = 'auto',
+            imports = 'ormless',
+            repository = false,
+          },
+        ]) =>
           new Promise<[string, string]>((resolve, reject) =>
             fs.readFile(template, { encoding: 'utf-8' }, (err, data) => {
               if (err) {
@@ -158,8 +187,10 @@ export class Introspection {
                   handlebars.compile(data)({
                     schemas,
                     root,
+                    imports,
                     withNamespace:
                       namespace !== 'never' && namespace === 'auto' && Object.keys(this.#config.database).length > 1,
+                    repository,
                   }),
                 ]);
               }

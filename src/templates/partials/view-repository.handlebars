@@ -1,0 +1,3 @@
+export class {{viewName.pascalCase}}Repository extends ORMLessQueryable<{{root}}Schema, {{root}}Metadata,  '{{viewName.camelCase}}'> {
+  protected table = '{{viewName.camelCase}}' as const;
+}
