@@ -53,6 +53,10 @@ export class Introspection {
           }
 
           const constraints = definitions.constraints
+            .filter(
+              (constraint) =>
+                constraint.constraintSchema === table.tableSchema && constraint.constraintTable === table.tableName
+            )
             .map((constraint) => {
               const constraintSetting = tableSetting?.constriants?.[constraint.constraintName];
               if (constraintSetting === false) {
@@ -61,7 +65,8 @@ export class Introspection {
               return {
                 constraintName: this.convertStringCase(constraint.constraintName),
                 constraintAbbr: constraintSetting?.name,
-                constraintType: constraint.columns
+                constraintType: constraint.constraintType,
+                constraintTypescriptType: constraint.columns
                   .map((x) => cases.camelCase(x))
                   .map((x) => `'${x}'`)
                   .join('|'),
@@ -284,6 +289,7 @@ interface TableConstrainModel {
   constraintName: NameMap;
   constraintAbbr: string | undefined;
   constraintType: string;
+  constraintTypescriptType: string;
 }
 
 interface TableColumnModel {
