@@ -25,7 +25,7 @@ export namespace Database {
 
     export interface Insert extends Model {}
 
-    export interface Update extends Partial<Insert> {}
+    export interface Update extends Partial<Model> {}
 
     export interface Select extends Required<Model> {}
   }
@@ -54,7 +54,7 @@ export namespace Database {
 
     export interface Insert extends Model {}
 
-    export interface Update extends Partial<Insert> {}
+    export interface Update extends Partial<Model> {}
 
     export interface Select extends Required<Model> {}
   }
@@ -78,7 +78,7 @@ export namespace Database {
 
     export interface Insert extends Model {}
 
-    export interface Update extends Partial<Insert> {}
+    export interface Update extends Partial<Model> {}
 
     export interface Select extends Required<Model> {}
   }
@@ -103,7 +103,7 @@ export namespace Database {
 
     export interface Insert extends Model {}
 
-    export interface Update extends Partial<Insert> {}
+    export interface Update extends Partial<Model> {}
 
     export interface Select extends Required<Model> {}
   }
@@ -127,7 +127,7 @@ export namespace Database {
 
     export interface Insert extends Model {}
 
-    export interface Update extends Partial<Insert> {}
+    export interface Update extends Partial<Model> {}
 
     export interface Select extends Required<Model> {}
   }
@@ -159,7 +159,7 @@ export namespace Database {
 
     export interface Insert extends Model {}
 
-    export interface Update extends Partial<Insert> {}
+    export interface Update extends Partial<Model> {}
 
     export interface Select extends Required<Model> {}
   }
@@ -194,7 +194,7 @@ export namespace Database {
 
     export interface Insert extends Model {}
 
-    export interface Update extends Partial<Insert> {}
+    export interface Update extends Partial<Model> {}
 
     export interface Select extends Required<Model> {}
   }
@@ -218,7 +218,7 @@ export namespace Database {
 
     export interface Insert extends Model {}
 
-    export interface Update extends Partial<Insert> {}
+    export interface Update extends Partial<Model> {}
 
     export interface Select extends Required<Model> {}
   }
@@ -242,7 +242,7 @@ export namespace Database {
 
     export interface Insert extends Model {}
 
-    export interface Update extends Partial<Insert> {}
+    export interface Update extends Partial<Model> {}
 
     export interface Select extends Required<Model> {}
   }
@@ -267,7 +267,7 @@ export namespace Database {
 
     export interface Insert extends Model {}
 
-    export interface Update extends Partial<Insert> {}
+    export interface Update extends Partial<Model> {}
 
     export interface Select extends Required<Model> {}
   }
@@ -291,7 +291,7 @@ export namespace Database {
 
     export interface Insert extends Model {}
 
-    export interface Update extends Partial<Insert> {}
+    export interface Update extends Partial<Model> {}
 
     export interface Select extends Required<Model> {}
   }
@@ -316,7 +316,7 @@ export namespace Database {
 
     export interface Insert extends Model {}
 
-    export interface Update extends Partial<Insert> {}
+    export interface Update extends Partial<Model> {}
 
     export interface Select extends Required<Model> {}
   }
@@ -341,7 +341,7 @@ export namespace Database {
 
     export interface Insert extends Model {}
 
-    export interface Update extends Partial<Insert> {}
+    export interface Update extends Partial<Model> {}
 
     export interface Select extends Required<Model> {}
   }
@@ -366,7 +366,7 @@ export namespace Database {
 
     export interface Insert extends Model {}
 
-    export interface Update extends Partial<Insert> {}
+    export interface Update extends Partial<Model> {}
 
     export interface Select extends Required<Model> {}
   }
@@ -391,7 +391,7 @@ export namespace Database {
 
     export interface Insert extends Model {}
 
-    export interface Update extends Partial<Insert> {}
+    export interface Update extends Partial<Model> {}
 
     export interface Select extends Required<Model> {}
   }
@@ -416,7 +416,7 @@ export namespace Database {
 
     export interface Insert extends Model {}
 
-    export interface Update extends Partial<Insert> {}
+    export interface Update extends Partial<Model> {}
 
     export interface Select extends Required<Model> {}
   }
@@ -441,7 +441,7 @@ export namespace Database {
 
     export interface Insert extends Model {}
 
-    export interface Update extends Partial<Insert> {}
+    export interface Update extends Partial<Model> {}
 
     export interface Select extends Required<Model> {}
   }
@@ -466,7 +466,7 @@ export namespace Database {
 
     export interface Insert extends Model {}
 
-    export interface Update extends Partial<Insert> {}
+    export interface Update extends Partial<Model> {}
 
     export interface Select extends Required<Model> {}
   }
@@ -494,7 +494,7 @@ export namespace Database {
 
     export interface Insert extends Model {}
 
-    export interface Update extends Partial<Insert> {}
+    export interface Update extends Partial<Model> {}
 
     export interface Select extends Required<Model> {}
   }
@@ -526,7 +526,7 @@ export namespace Database {
 
     export interface Insert extends Model {}
 
-    export interface Update extends Partial<Insert> {}
+    export interface Update extends Partial<Model> {}
 
     export interface Select extends Required<Model> {}
   }
@@ -551,7 +551,7 @@ export namespace Database {
 
     export interface Insert extends Model {}
 
-    export interface Update extends Partial<Insert> {}
+    export interface Update extends Partial<Model> {}
 
     export interface Select extends Required<Model> {}
   }
