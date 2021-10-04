@@ -17,6 +17,7 @@ export { AnyColumn };
 
 export type ORMLessMetadata<DB> = {
   [TB in keyof DB]: {
+    pk: keyof DB[TB];
     unique: { [K: string]: any };
     insert: any;
     update: any;

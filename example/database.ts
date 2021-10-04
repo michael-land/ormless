@@ -1,14 +1,13 @@
 /* eslint-disable @typescript-eslint/no-empty-interface */
 /* eslint-disable @typescript-eslint/no-namespace */
-import { ORMLess, ORMLessQueryable } from '../src/ormless';
+import { ORMLess as Repository } from '../src/ormless';
 
 export namespace Database {
   export namespace Actor {
     export type Name = 'actor';
     export type Column = keyof Model;
-
+    export type PrimaryKeyColumn = 'actorId';
     export type PrimaryKeyConstriant = 'actor_pkey';
-
     export type UniqueConstriants = 'actor_pkey';
 
     export interface WhereUniqueInput {
@@ -31,9 +30,8 @@ export namespace Database {
   export namespace Address {
     export type Name = 'address';
     export type Column = keyof Model;
-
+    export type PrimaryKeyColumn = 'addressId';
     export type PrimaryKeyConstriant = 'address_pkey';
-
     export type UniqueConstriants = 'address_pkey';
 
     export interface WhereUniqueInput {
@@ -60,9 +58,8 @@ export namespace Database {
   export namespace Category {
     export type Name = 'category';
     export type Column = keyof Model;
-
+    export type PrimaryKeyColumn = 'categoryId';
     export type PrimaryKeyConstriant = 'category_pkey';
-
     export type UniqueConstriants = 'category_pkey';
 
     export interface WhereUniqueInput {
@@ -84,9 +81,8 @@ export namespace Database {
   export namespace City {
     export type Name = 'city';
     export type Column = keyof Model;
-
+    export type PrimaryKeyColumn = 'cityId';
     export type PrimaryKeyConstriant = 'city_pkey';
-
     export type UniqueConstriants = 'city_pkey';
 
     export interface WhereUniqueInput {
@@ -109,9 +105,8 @@ export namespace Database {
   export namespace Country {
     export type Name = 'country';
     export type Column = keyof Model;
-
+    export type PrimaryKeyColumn = 'countryId';
     export type PrimaryKeyConstriant = 'country_pkey';
-
     export type UniqueConstriants = 'country_pkey';
 
     export interface WhereUniqueInput {
@@ -133,9 +128,8 @@ export namespace Database {
   export namespace Customer {
     export type Name = 'customer';
     export type Column = keyof Model;
-
+    export type PrimaryKeyColumn = 'customerId';
     export type PrimaryKeyConstriant = 'customer_pkey';
-
     export type UniqueConstriants = 'customer_pkey' | 'customer_email_uk';
 
     export interface WhereUniqueInput {
@@ -165,9 +159,8 @@ export namespace Database {
   export namespace Film {
     export type Name = 'film';
     export type Column = keyof Model;
-
+    export type PrimaryKeyColumn = 'filmId';
     export type PrimaryKeyConstriant = 'film_pkey';
-
     export type UniqueConstriants = 'film_pkey';
 
     export interface WhereUniqueInput {
@@ -200,9 +193,8 @@ export namespace Database {
   export namespace FilmActor {
     export type Name = 'film_actor';
     export type Column = keyof Model;
-
+    export type PrimaryKeyColumn = 'actorId' | 'filmId';
     export type PrimaryKeyConstriant = 'film_actor_pkey';
-
     export type UniqueConstriants = 'film_actor_pkey';
 
     export interface WhereUniqueInput {
@@ -224,9 +216,8 @@ export namespace Database {
   export namespace FilmCategory {
     export type Name = 'film_category';
     export type Column = keyof Model;
-
+    export type PrimaryKeyColumn = 'filmId' | 'categoryId';
     export type PrimaryKeyConstriant = 'film_category_pkey';
-
     export type UniqueConstriants = 'film_category_pkey';
 
     export interface WhereUniqueInput {
@@ -248,9 +239,8 @@ export namespace Database {
   export namespace Inventory {
     export type Name = 'inventory';
     export type Column = keyof Model;
-
+    export type PrimaryKeyColumn = 'inventoryId';
     export type PrimaryKeyConstriant = 'inventory_pkey';
-
     export type UniqueConstriants = 'inventory_pkey';
 
     export interface WhereUniqueInput {
@@ -273,9 +263,8 @@ export namespace Database {
   export namespace Language {
     export type Name = 'language';
     export type Column = keyof Model;
-
+    export type PrimaryKeyColumn = 'languageId';
     export type PrimaryKeyConstriant = 'language_pkey';
-
     export type UniqueConstriants = 'language_pkey';
 
     export interface WhereUniqueInput {
@@ -297,9 +286,8 @@ export namespace Database {
   export namespace Payment {
     export type Name = 'payment';
     export type Column = keyof Model;
-
+    export type PrimaryKeyColumn = never;
     export type PrimaryKeyConstriant = never;
-
     export type UniqueConstriants = never;
 
     export interface WhereUniqueInput {}
@@ -322,9 +310,8 @@ export namespace Database {
   export namespace Rental {
     export type Name = 'rental';
     export type Column = keyof Model;
-
+    export type PrimaryKeyColumn = 'rentalId';
     export type PrimaryKeyConstriant = 'rental_pkey';
-
     export type UniqueConstriants = 'rental_pkey';
 
     export interface WhereUniqueInput {
@@ -350,9 +337,8 @@ export namespace Database {
   export namespace Staff {
     export type Name = 'staff';
     export type Column = keyof Model;
-
+    export type PrimaryKeyColumn = 'staffId';
     export type PrimaryKeyConstriant = 'staff_pkey';
-
     export type UniqueConstriants = 'staff_pkey';
 
     export interface WhereUniqueInput {
@@ -382,9 +368,8 @@ export namespace Database {
   export namespace Store {
     export type Name = 'store';
     export type Column = keyof Model;
-
+    export type PrimaryKeyColumn = 'storeId';
     export type PrimaryKeyConstriant = 'store_pkey';
-
     export type UniqueConstriants = 'store_pkey';
 
     export interface WhereUniqueInput {
@@ -428,124 +413,154 @@ export interface DatabaseSchema {
 
 export interface DatabaseMetadata {
   actor: {
+    pk: Database.Actor.PrimaryKeyColumn;
     unique: Database.Actor.WhereUniqueInput;
     insert: Database.Actor.Insert;
     update: Database.Actor.Update;
   };
   address: {
+    pk: Database.Address.PrimaryKeyColumn;
     unique: Database.Address.WhereUniqueInput;
     insert: Database.Address.Insert;
     update: Database.Address.Update;
   };
   category: {
+    pk: Database.Category.PrimaryKeyColumn;
     unique: Database.Category.WhereUniqueInput;
     insert: Database.Category.Insert;
     update: Database.Category.Update;
   };
   city: {
+    pk: Database.City.PrimaryKeyColumn;
     unique: Database.City.WhereUniqueInput;
     insert: Database.City.Insert;
     update: Database.City.Update;
   };
   country: {
+    pk: Database.Country.PrimaryKeyColumn;
     unique: Database.Country.WhereUniqueInput;
     insert: Database.Country.Insert;
     update: Database.Country.Update;
   };
   customer: {
+    pk: Database.Customer.PrimaryKeyColumn;
     unique: Database.Customer.WhereUniqueInput;
     insert: Database.Customer.Insert;
     update: Database.Customer.Update;
   };
   film: {
+    pk: Database.Film.PrimaryKeyColumn;
     unique: Database.Film.WhereUniqueInput;
     insert: Database.Film.Insert;
     update: Database.Film.Update;
   };
   filmActor: {
+    pk: Database.FilmActor.PrimaryKeyColumn;
     unique: Database.FilmActor.WhereUniqueInput;
     insert: Database.FilmActor.Insert;
     update: Database.FilmActor.Update;
   };
   filmCategory: {
+    pk: Database.FilmCategory.PrimaryKeyColumn;
     unique: Database.FilmCategory.WhereUniqueInput;
     insert: Database.FilmCategory.Insert;
     update: Database.FilmCategory.Update;
   };
   inventory: {
+    pk: Database.Inventory.PrimaryKeyColumn;
     unique: Database.Inventory.WhereUniqueInput;
     insert: Database.Inventory.Insert;
     update: Database.Inventory.Update;
   };
   language: {
+    pk: Database.Language.PrimaryKeyColumn;
     unique: Database.Language.WhereUniqueInput;
     insert: Database.Language.Insert;
     update: Database.Language.Update;
   };
   payment: {
+    pk: Database.Payment.PrimaryKeyColumn;
     unique: Database.Payment.WhereUniqueInput;
     insert: Database.Payment.Insert;
     update: Database.Payment.Update;
   };
   rental: {
+    pk: Database.Rental.PrimaryKeyColumn;
     unique: Database.Rental.WhereUniqueInput;
     insert: Database.Rental.Insert;
     update: Database.Rental.Update;
   };
   staff: {
+    pk: Database.Staff.PrimaryKeyColumn;
     unique: Database.Staff.WhereUniqueInput;
     insert: Database.Staff.Insert;
     update: Database.Staff.Update;
   };
   store: {
+    pk: Database.Store.PrimaryKeyColumn;
     unique: Database.Store.WhereUniqueInput;
     insert: Database.Store.Insert;
     update: Database.Store.Update;
   };
 }
 
-export class ActorRepository extends ORMLess<DatabaseSchema, DatabaseMetadata, 'actor'> {
-  protected table = 'actor' as const;
+export class ActorRepository extends Repository<DatabaseSchema, DatabaseMetadata, 'actor'> {
+  protected abstract readonly table = 'actor' as const;
+  protected abstract readonly primaryKeys = ['actorId'] as const;
 }
-export class AddressRepository extends ORMLess<DatabaseSchema, DatabaseMetadata, 'address'> {
-  protected table = 'address' as const;
+export class AddressRepository extends Repository<DatabaseSchema, DatabaseMetadata, 'address'> {
+  protected abstract readonly table = 'address' as const;
+  protected abstract readonly primaryKeys = ['addressId'] as const;
 }
-export class CategoryRepository extends ORMLess<DatabaseSchema, DatabaseMetadata, 'category'> {
-  protected table = 'category' as const;
+export class CategoryRepository extends Repository<DatabaseSchema, DatabaseMetadata, 'category'> {
+  protected abstract readonly table = 'category' as const;
+  protected abstract readonly primaryKeys = ['categoryId'] as const;
 }
-export class CityRepository extends ORMLess<DatabaseSchema, DatabaseMetadata, 'city'> {
-  protected table = 'city' as const;
+export class CityRepository extends Repository<DatabaseSchema, DatabaseMetadata, 'city'> {
+  protected abstract readonly table = 'city' as const;
+  protected abstract readonly primaryKeys = ['cityId'] as const;
 }
-export class CountryRepository extends ORMLess<DatabaseSchema, DatabaseMetadata, 'country'> {
-  protected table = 'country' as const;
+export class CountryRepository extends Repository<DatabaseSchema, DatabaseMetadata, 'country'> {
+  protected abstract readonly table = 'country' as const;
+  protected abstract readonly primaryKeys = ['countryId'] as const;
 }
-export class CustomerRepository extends ORMLess<DatabaseSchema, DatabaseMetadata, 'customer'> {
-  protected table = 'customer' as const;
+export class CustomerRepository extends Repository<DatabaseSchema, DatabaseMetadata, 'customer'> {
+  protected abstract readonly table = 'customer' as const;
+  protected abstract readonly primaryKeys = ['customerId'] as const;
 }
-export class FilmRepository extends ORMLess<DatabaseSchema, DatabaseMetadata, 'film'> {
-  protected table = 'film' as const;
+export class FilmRepository extends Repository<DatabaseSchema, DatabaseMetadata, 'film'> {
+  protected abstract readonly table = 'film' as const;
+  protected abstract readonly primaryKeys = ['filmId'] as const;
 }
-export class FilmActorRepository extends ORMLess<DatabaseSchema, DatabaseMetadata, 'filmActor'> {
-  protected table = 'filmActor' as const;
+export class FilmActorRepository extends Repository<DatabaseSchema, DatabaseMetadata, 'filmActor'> {
+  protected abstract readonly table = 'filmActor' as const;
+  protected abstract readonly primaryKeys = [] as const;
 }
-export class FilmCategoryRepository extends ORMLess<DatabaseSchema, DatabaseMetadata, 'filmCategory'> {
-  protected table = 'filmCategory' as const;
+export class FilmCategoryRepository extends Repository<DatabaseSchema, DatabaseMetadata, 'filmCategory'> {
+  protected abstract readonly table = 'filmCategory' as const;
+  protected abstract readonly primaryKeys = [] as const;
 }
-export class InventoryRepository extends ORMLess<DatabaseSchema, DatabaseMetadata, 'inventory'> {
-  protected table = 'inventory' as const;
+export class InventoryRepository extends Repository<DatabaseSchema, DatabaseMetadata, 'inventory'> {
+  protected abstract readonly table = 'inventory' as const;
+  protected abstract readonly primaryKeys = ['inventoryId'] as const;
 }
-export class LanguageRepository extends ORMLess<DatabaseSchema, DatabaseMetadata, 'language'> {
-  protected table = 'language' as const;
+export class LanguageRepository extends Repository<DatabaseSchema, DatabaseMetadata, 'language'> {
+  protected abstract readonly table = 'language' as const;
+  protected abstract readonly primaryKeys = ['languageId'] as const;
 }
-export class PaymentRepository extends ORMLess<DatabaseSchema, DatabaseMetadata, 'payment'> {
-  protected table = 'payment' as const;
+export class PaymentRepository extends Repository<DatabaseSchema, DatabaseMetadata, 'payment'> {
+  protected abstract readonly table = 'payment' as const;
+  protected abstract readonly primaryKeys = [] as const;
 }
-export class RentalRepository extends ORMLess<DatabaseSchema, DatabaseMetadata, 'rental'> {
-  protected table = 'rental' as const;
+export class RentalRepository extends Repository<DatabaseSchema, DatabaseMetadata, 'rental'> {
+  protected abstract readonly table = 'rental' as const;
+  protected abstract readonly primaryKeys = ['rentalId'] as const;
 }
-export class StaffRepository extends ORMLess<DatabaseSchema, DatabaseMetadata, 'staff'> {
-  protected table = 'staff' as const;
+export class StaffRepository extends Repository<DatabaseSchema, DatabaseMetadata, 'staff'> {
+  protected abstract readonly table = 'staff' as const;
+  protected abstract readonly primaryKeys = ['staffId'] as const;
 }
-export class StoreRepository extends ORMLess<DatabaseSchema, DatabaseMetadata, 'store'> {
-  protected table = 'store' as const;
+export class StoreRepository extends Repository<DatabaseSchema, DatabaseMetadata, 'store'> {
+  protected abstract readonly table = 'store' as const;
+  protected abstract readonly primaryKeys = ['storeId'] as const;
 }

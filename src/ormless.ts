@@ -16,8 +16,9 @@ import {
 
 // TODO, overload typescript functions to allow return debug ? qb.compile() : qb.executeTakeFirstOrThrow();
 
-export abstract class ORMLessQueryable<DB, META extends ORMLessMetadata<DB>, TB extends keyof DB & string> {
+export abstract class ORMLess<DB, META extends ORMLessMetadata<DB>, TB extends keyof DB & string> {
   protected abstract table: TB;
+  protected abstract primaryKeys: ReadonlyArray<keyof META[TB]>;
 
   async selectOne<S extends AnyColumn<DB, TB>>(args: FindOneArgs<DB, TB, META, S>) {
     const { db, debug = false, where, select } = args;
@@ -46,13 +47,7 @@ export abstract class ORMLessQueryable<DB, META extends ORMLessMetadata<DB>, TB 
 
     return qb.execute();
   }
-}
 
-export abstract class ORMLess<
-  DB,
-  META extends ORMLessMetadata<DB>,
-  TB extends keyof DB & string
-> extends ORMLessQueryable<DB, META, TB> {
   async createOne<S extends AnyColumn<DB, TB>>(args: CreateOneArgs<DB, TB, META, S>) {
     const { db, debug = false, data, select = [] } = args;
     const qb = db

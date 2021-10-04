@@ -78,3 +78,48 @@ ormless.config.json
 - updateMany
 - deleteOne
 - deleteMany
+
+You can also defined custom shortcuts for all repository.
+
+Make sure you define the imports in `generate.[filename].repository`
+
+```json
+"generate": {
+  "database": {
+    "folder": "./src",
+    "repository": {
+      "import": {
+        "name": "Repository",
+        "path": "./repository"
+      }
+    }
+  }
+}
+```
+
+```ts
+export abstract class Repository<DB, META extends ORMLessMetadata<DB>, TB extends keyof DB & string> extends ORMLess<
+  DB,
+  META,
+  TB
+> {
+  async mergeOne<
+    Prev extends SetRequired<Partial<DB[TB]>, META[TB]['pk']> | undefined,
+    Next extends META[TB]['insert'],
+    S extends AnyColumn<DB, TB>,
+    U extends keyof Prev
+  >(ctx: { prev: Prev; next: Next; select: ReadonlyArray<S>; update: Array<U>; db: Kysely<DB>; debug?: true }) {
+    const { next, select, update, prev, db, debug } = ctx;
+    const changes = prev ? diff({ prev, next: pick(next, update) }) : undefined;
+    if (!prev) return await this.createOne({ data: next, select, db, debug });
+
+    const where = pick(prev, this.table) as META[TB]['unique'][META[TB]['pk']];
+
+    return changes && Object.keys(changes).length
+      ? await this.updateOne({ data: changes, select, where, db, debug })
+      : select.every((column) => Object.keys(prev).includes(column as string))
+      ? pick(prev, select)
+      : await this.selectOne({ select, where, db, debug });
+  }
+}
+```

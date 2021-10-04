@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-empty-interface */
 /* eslint-disable @typescript-eslint/no-namespace */
 {{#if repository}}
-import { ORMLess, ORMLessQueryable } from '{{repository.import}}';
+import { {{repository.import.name}} as Repository } from '{{repository.import.path}}';
 {{/if}}
 
 export namespace {{root}} {
@@ -34,6 +34,7 @@ export interface {{root}}Metadata {
   {{#each schemas}}
     {{#each schemaTables}}
       '{{#unless ../isInSearchPath}}{{../schemaName.camelCase}}.{{/unless}}{{tableName.camelCase}}': {
+        pk: {{../../root}}.{{#if ../../withNamespace}}{{../schemaName.pascalCase}}.{{/if}}{{tableName.pascalCase}}.PrimaryKeyColumn,
         unique: {{../../root}}.{{#if ../../withNamespace}}{{../schemaName.pascalCase}}.{{/if}}{{tableName.pascalCase}}.WhereUniqueInput,
         insert: {{../../root}}.{{#if ../../withNamespace}}{{../schemaName.pascalCase}}.{{/if}}{{tableName.pascalCase}}.Insert,
         update: {{../../root}}.{{#if ../../withNamespace}}{{../schemaName.pascalCase}}.{{/if}}{{tableName.pascalCase}}.Update
@@ -41,6 +42,7 @@ export interface {{root}}Metadata {
     {{/each}}
     {{#each schemaViews}}
       '{{#unless ../isInSearchPath}}{{../schemaName.camelCase}}.{{/unless}}{{viewName.camelCase}}': {
+        pk:never
         unique: never,
         insert: never,
         update: never

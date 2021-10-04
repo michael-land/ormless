@@ -3,14 +3,18 @@
   export namespace {{tableName.pascalCase}} {
     export type Name = '{{tableName.original}}';
     export type Column = keyof Model;
-
-    export type PrimaryKeyConstriant = 
-      {{#each tablePrimaryConstraints}}
-      | '{{constraintName.original}}'
+    export type PrimaryKeyColumn = 
+      {{#if tablePrimaryConstraint}}
+      | {{{tablePrimaryConstraint.constraintTypescriptType}}}
       {{else}}
         never
-      {{/each}};
-
+      {{/if}};
+    export type PrimaryKeyConstriant = 
+      {{#if tablePrimaryConstraint}}
+      | '{{tablePrimaryConstraint.constraintName.original}}'
+      {{else}}
+        never
+      {{/if}};
     export type UniqueConstriants = 
       {{#each tableUniqueConstraints}}
       | '{{constraintName.original}}'

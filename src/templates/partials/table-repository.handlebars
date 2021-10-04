@@ -1,3 +1,8 @@
-export class {{tableName.pascalCase}}Repository extends ORMLess<{{root}}Schema, {{root}}Metadata, '{{tableName.camelCase}}'> {
-  protected table = '{{tableName.camelCase}}' as const;
+export class {{tableName.pascalCase}}Repository extends Repository<{{root}}Schema, {{root}}Metadata, '{{tableName.camelCase}}'> {
+  protected readonly table = '{{tableName.camelCase}}' as const;
+  protected readonly primaryKeys = [
+    {{#each tableColumns}}
+      {{#if isPrimaryKey}}'{{columnName.camelCase}}',{{/if}}
+    {{/each}}
+  ] as const
 }

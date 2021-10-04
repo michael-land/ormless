@@ -80,7 +80,7 @@ export class Introspection {
 
           return {
             tableName: this.convertStringCase(table.tableName),
-            tablePrimaryConstraints: constraints.filter((c) => c.constraintType === 'p'),
+            tablePrimaryConstraint: constraints.find((c) => c.constraintType === 'p'),
             tableUniqueConstraints: constraints.filter((c) => c.constraintType === 'u' || c.constraintType === 'p'),
             tableForeignConstraints: constraints.filter((c) => c.constraintType === 'f'),
             tableColumns: columns,
@@ -274,7 +274,7 @@ interface ViewModel {
 
 interface TableModel {
   tableName: NameMap;
-  tablePrimaryConstraints: TableConstrainModel[];
+  tablePrimaryConstraint?: TableConstrainModel;
   tableForeignConstraints: TableConstrainModel[];
   tableUniqueConstraints: TableConstrainModel[];
   tableColumns: TableColumnModel[];

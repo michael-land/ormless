@@ -30,7 +30,10 @@
     "database": {
       "folder": "example",
       "repository": {
-        "import": "../src/ormless"
+        "import": {
+          "name": "ORMLess",
+          "path": "../src/ormless"
+        }
       }
     }
   }
