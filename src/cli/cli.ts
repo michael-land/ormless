@@ -43,14 +43,20 @@ export async function cli(config: CliConfig = argvConfig) {
         fs.mkdirSync(directory, { recursive: true });
       }
 
-      fs.writeFileSync(outFile, prettier.format(value, { parser: 'typescript', ...prettierConfig }));
+      fs.writeFileSync(
+        outFile,
+        prettier.format(value, { parser: 'typescript', ...prettierConfig })
+      );
     })
   );
 
   return generated;
 }
 
-async function measure<T extends (...args: any) => any>(label: string, cb: T): Promise<ReturnType<T>> {
+async function measure<T extends (...args: any) => any>(
+  label: string,
+  cb: T
+): Promise<ReturnType<T>> {
   try {
     console.time(label);
     return await cb();

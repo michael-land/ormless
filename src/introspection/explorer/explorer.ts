@@ -11,7 +11,8 @@ export class Explorer {
   }
 
   async getDefinitions() {
-    const instance = this.#config.connection.dialect === 'postgres' ? new PostgresExplorer(this.#config) : null;
+    const instance =
+      this.#config.connection.dialect === 'postgres' ? new PostgresExplorer(this.#config) : null;
 
     guard.assertNonNullable(instance);
 

@@ -22,7 +22,9 @@ export class PostgresExplorer implements ExplorerMethods<PostgresSchema> {
     this.#includedSchemas = Object.keys(database);
     this.#includedTables = uniq(
       Object.entries(database)
-        .flatMap(([schema, { tables }]) => Object.keys(tables ?? {})?.map((table) => `${schema}.${table}`))
+        .flatMap(([schema, { tables }]) =>
+          Object.keys(tables ?? {})?.map((table) => `${schema}.${table}`)
+        )
         .filter(guard.isDefined)
     );
   }
@@ -34,7 +36,11 @@ export class PostgresExplorer implements ExplorerMethods<PostgresSchema> {
       .orderBy('tableName');
 
     if (this.#includedTables.length) {
-      qb = qb.where(db.raw<string>(`concat_ws('.',table_schema,table_name)`), 'in', this.#includedTables);
+      qb = qb.where(
+        db.raw<string>(`concat_ws('.',table_schema,table_name)`),
+        'in',
+        this.#includedTables
+      );
     }
     return qb.execute();
   }
@@ -45,7 +51,11 @@ export class PostgresExplorer implements ExplorerMethods<PostgresSchema> {
       .leftJoin('constraintColumnUsage', (join) =>
         join
           .onRef('conname', '=', 'constraintName')
-          .onRef(db.raw('connamespace::regnamespace'), '=', db.raw('constraint_schema::regnamespace'))
+          .onRef(
+            db.raw('connamespace::regnamespace'),
+            '=',
+            db.raw('constraint_schema::regnamespace')
+          )
       )
       .select([
         'conname',
@@ -58,7 +68,11 @@ export class PostgresExplorer implements ExplorerMethods<PostgresSchema> {
       .groupBy(['conname', 'contype', 'tableSchema', 'tableName']);
 
     if (this.#includedTables.length) {
-      qb = qb.where(db.raw<string>(`concat_ws('.',table_schema,table_name)`), 'in', this.#includedTables);
+      qb = qb.where(
+        db.raw<string>(`concat_ws('.',table_schema,table_name)`),
+        'in',
+        this.#includedTables
+      );
     }
 
     const constraints = await qb.execute();
@@ -109,7 +123,9 @@ export class PostgresExplorer implements ExplorerMethods<PostgresSchema> {
 
     if (this.#includedTables.length) {
       qbConstraints = qbConstraints.where(
-        db.raw<string>(`concat_ws('.',table_constraints.table_schema,table_constraints.table_name)`),
+        db.raw<string>(
+          `concat_ws('.',table_constraints.table_schema,table_constraints.table_name)`
+        ),
         'in',
         this.#includedTables
       );

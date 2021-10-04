@@ -65,7 +65,9 @@ export function isTruthy<T>(value: T): value is Exclude<T, null | undefined | fa
   return !!value;
 }
 
-export function isNot<T, S extends T>(predicate: (data: T) => data is S): (data: T) => data is Exclude<T, S>;
+export function isNot<T, S extends T>(
+  predicate: (data: T) => data is S
+): (data: T) => data is Exclude<T, S>;
 export function isNot<T>(predicate: (data: T) => any): (data: T) => boolean;
 export function isNot<T>(predicate: (data: T) => any) {
   return (data: T) => {

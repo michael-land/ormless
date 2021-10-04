@@ -81,7 +81,9 @@ export class Introspection {
           return {
             tableName: this.convertStringCase(table.tableName),
             tablePrimaryConstraint: constraints.find((c) => c.constraintType === 'p'),
-            tableUniqueConstraints: constraints.filter((c) => c.constraintType === 'u' || c.constraintType === 'p'),
+            tableUniqueConstraints: constraints.filter(
+              (c) => c.constraintType === 'u' || c.constraintType === 'p'
+            ),
             tableForeignConstraints: constraints.filter((c) => c.constraintType === 'f'),
             tableColumns: columns,
           };
@@ -93,7 +95,10 @@ export class Introspection {
         .filter((table) => table.tableType === 'VIEW')
         .map((table) => {
           const columns = definitions.columns
-            .filter((column) => column.tableSchema === table.tableSchema && column.tableName === table.tableName)
+            .filter(
+              (column) =>
+                column.tableSchema === table.tableSchema && column.tableName === table.tableName
+            )
             .map((column) => {
               let typescriptType = this.getTypescriptType(column.columnType);
 
@@ -132,11 +137,17 @@ export class Introspection {
     );
     handlebars.registerPartial(
       'generateTableRepository',
-      fs.readFileSync(path.join(__dirname, '../templates/partials/table-repository.handlebars'), 'utf-8')
+      fs.readFileSync(
+        path.join(__dirname, '../templates/partials/table-repository.handlebars'),
+        'utf-8'
+      )
     );
     handlebars.registerPartial(
       'generateViewRepository',
-      fs.readFileSync(path.join(__dirname, '../templates/partials/view-repository.handlebars'), 'utf-8')
+      fs.readFileSync(
+        path.join(__dirname, '../templates/partials/view-repository.handlebars'),
+        'utf-8'
+      )
     );
 
     const templates = await Promise.all(
@@ -154,7 +165,9 @@ export class Introspection {
                     root,
                     repository,
                     withNamespace:
-                      namespace !== 'never' && namespace === 'auto' && Object.keys(this.#config.database).length > 1,
+                      namespace !== 'never' &&
+                      namespace === 'auto' &&
+                      Object.keys(this.#config.database).length > 1,
                   }),
                 ]);
               }

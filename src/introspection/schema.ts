@@ -32,7 +32,12 @@ const ConnectionConfigSchema = object({
 
 const GenerateConfigSchema = object({
   repository: optional(
-    object({ import: defaulted(object({ name: string(), path: string() }), { name: 'ORMLess', path: 'ormless' }) })
+    object({
+      import: defaulted(object({ name: string(), path: string() }), {
+        name: 'ORMLess',
+        path: 'ormless',
+      }),
+    })
   ),
   folder: defaulted(string(), ''),
   root: defaulted(string(), 'Database'),
