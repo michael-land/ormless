@@ -18,7 +18,7 @@ import {
 
 export abstract class ORMLess<DB, META extends ORMLessMetadata<DB>, TB extends keyof DB & string> {
   protected abstract table: TB;
-  protected abstract primaryKeys: ReadonlyArray<keyof META[TB]>;
+  protected abstract primaryKeys: ReadonlyArray<keyof DB[TB]>;
 
   async selectOne<S extends AnyColumn<DB, TB>>(args: FindOneArgs<DB, TB, META, S>) {
     const { db, debug = false, where, select } = args;
