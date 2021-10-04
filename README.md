@@ -9,7 +9,6 @@ Features:
 
 # Installation
 
-
 Ormless currently only works on postgres.
 
 MySQL and sqlite support will be added once Kysely support them. Kysely also has a simple interface for [third-party dialects](https://koskimas.github.io/kysely/interfaces/Dialect.html).
@@ -32,34 +31,34 @@ ormless.config.json
 {
   "database": {
     "public": {
-      "actor": {},
-      "address": {},
-      "category": {},
-      "city": {},
-      "country": {},
-      "customer": {},
-      "film": {},
-      "film_actor": {},
-      "film_category": {},
-      "inventory": {},
-      "language": {},
-      "payment": {},
-      "rental": {},
-      "staff": {},
-      "store": {}
+      "tables": {
+        "actor": {},
+        "address": {},
+        "category": {},
+        "city": {},
+        "country": {},
+        "customer": {},
+        "film": {},
+        "film_actor": {},
+        "film_category": {},
+        "inventory": {},
+        "language": {},
+        "payment": {},
+        "rental": {},
+        "staff": {},
+        "store": {}
+      }
     }
   },
-  "paths": ["public"],
   "connection": {
     "database": "ormless",
     "host": "localhost",
-    "user": "michael",
     "dialect": "postgres"
   },
   "generate": {
     "database": {
-      "repository": true,
-      "folder": "example"
+      "folder": "example",
+      "repository": {}
     }
   }
 }
