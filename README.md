@@ -51,9 +51,9 @@ ormless.config.json
     }
   },
   "connection": {
-    "database": "ormless",
-    "host": "localhost",
-    "dialect": "postgres"
+    "dialect": "postgres",
+    "database": "postgres",
+    "host": "localhost"
   },
   "generate": {
     "database": {
