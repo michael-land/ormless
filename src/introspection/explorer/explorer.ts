@@ -1,11 +1,12 @@
-import { CamelCasePlugin, DriverConfig, Kysely, KyselyConfig } from 'kysely';
+import { CamelCasePlugin, Kysely } from 'kysely';
 import { guard } from '../../utils';
+import { ConfigSchema } from '../schema';
 import { PostgresExplorer } from './postgres.explorer';
 
 export class Explorer {
-  #config: ExplorerConfig;
+  #config: ConfigSchema;
 
-  constructor(config: ExplorerConfig) {
+  constructor(config: ConfigSchema) {
     this.#config = config;
   }
 
@@ -66,26 +67,6 @@ export interface EnumDefinition {
   enumSchema: string;
   enumName: string;
   enumValues: string[];
-}
-
-export type ExplorerSetting<T> = Record<string, T | false>;
-
-export type ExplorerConnectionConfig = DriverConfig & { dialect: KyselyConfig['dialect'] & string };
-export type ExplorerDatabaseConfig = ExplorerSetting<ExplorerSchemaConfig>;
-export type ExplorerSchemaConfig = {
-  tables?: ExplorerSetting<ExplorerTableConfig>;
-  enums?: ExplorerSetting<ExplorerEnumConfig>;
-};
-export type ExplorerTableConfig = {
-  columns?: ExplorerSetting<ExplorerColumnConfig>;
-  constriants?: ExplorerSetting<ExplorerConstriantConfig>;
-};
-export type ExplorerColumnConfig = { name?: string; type?: string };
-export type ExplorerConstriantConfig = { name: string };
-export type ExplorerEnumConfig = string[];
-export interface ExplorerConfig {
-  connection: ExplorerConnectionConfig;
-  database: ExplorerDatabaseConfig;
 }
 
 export interface ExplorerMethodsArgs<T> {

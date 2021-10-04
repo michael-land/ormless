@@ -1,10 +1,8 @@
-{{#if repository}}
-import { ORMLess, ORMLessQueryable } from '{{imports}}';
-
-{{/if}}
 /* eslint-disable @typescript-eslint/no-empty-interface */
 /* eslint-disable @typescript-eslint/no-namespace */
-
+{{#if repository}}
+import { ORMLess, ORMLessQueryable } from '{{repository.import}}';
+{{/if}}
 
 export namespace {{root}} {
   {{#if withNamespace}}

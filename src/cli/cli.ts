@@ -2,7 +2,8 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as prettier from 'prettier';
 import * as yargs from 'yargs';
-import { Introspection, IntrospectionConfig } from '../introspection/introspection';
+import { Introspection } from '../introspection/introspection';
+import { ConfigSchema } from '../introspection/schema';
 import { guard } from '../utils';
 
 const argv = yargs(process.argv.slice(2))
@@ -19,7 +20,7 @@ const argv = yargs(process.argv.slice(2))
 
 const argvConfig = JSON.parse(fs.readFileSync(argv.c, 'utf8')) as CliConfig;
 
-export interface CliConfig extends IntrospectionConfig {
+export interface CliConfig extends ConfigSchema {
   prettier?: string | Partial<prettier.RequiredOptions> | null;
 }
 

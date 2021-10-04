@@ -2,23 +2,16 @@
   "database": {
     "information_schema": {
       "tables": {
-        "tables": {},
-        "table_constraints": {},
-        "key_column_usage": {},
-        "columns": {},
-        "constraint_column_usage": {}
+        "include": ["tables", "table_constraints", "key_column_usage", "columns", "constraint_column_usage"]
       }
     },
     "pg_catalog": {
       "tables": {
-        "pg_constraint": {},
-        "pg_enum": {},
-        "pg_type": {},
-        "pg_namespace": {}
+        "include": ["pg_constraint", "pg_enum", "pg_type", "pg_namespace"]
       }
     }
   },
-  "paths": ["information_schema", "pg_catalog"],
+  "searchPaths": ["information_schema", "pg_catalog"],
   "connection": {
     "database": "ormless",
     "host": "localhost",
@@ -44,6 +37,5 @@
     "pg_ndistinct": "string",
     "pg_dependencies": "string",
     "pg_mcv_list": "string"
-  },
-  "import": "../src/ormless"
+  }
 }

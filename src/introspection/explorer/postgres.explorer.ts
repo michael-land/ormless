@@ -1,5 +1,6 @@
 import { guard } from '../../utils';
-import { ExplorerConfig, ExplorerMethods, ExplorerMethodsArgs } from './explorer';
+import { ConfigSchema } from '../schema';
+import { ExplorerMethods, ExplorerMethodsArgs } from './explorer';
 import { PostgresSchema } from './postgres.interface';
 
 enum PgTypeType {
@@ -11,22 +12,19 @@ enum PgTypeType {
   Range = 'r',
 }
 
+const uniq = (strings: string[]) => [...new Set(strings)];
+
 export class PostgresExplorer implements ExplorerMethods<PostgresSchema> {
   readonly #includedSchemas: string[];
   readonly #includedTables: string[];
 
-  constructor({ database }: Pick<ExplorerConfig, 'database'>) {
+  constructor({ database }: Pick<ConfigSchema, 'database'>) {
     this.#includedSchemas = Object.keys(database);
-    this.#includedTables = [
-      ...new Set(
-        Object.values(database)
-          .filter(guard.isObject)
-          .map((x) => x.tables)
-          .filter(guard.isDefined)
-          .flatMap((x) => Object.entries(x).map(([k, v]) => (v !== false ? k : undefined)))
-          .filter(guard.isDefined)
-      ),
-    ];
+    this.#includedTables = uniq(
+      Object.entries(database)
+        .flatMap(([schema, { tables }]) => Object.keys(tables ?? {})?.map((table) => `${schema}.${table}`))
+        .filter(guard.isDefined)
+    );
   }
 
   async getTableDefinitions({ db }: ExplorerMethodsArgs<PostgresSchema>) {
@@ -35,11 +33,8 @@ export class PostgresExplorer implements ExplorerMethods<PostgresSchema> {
       .select(['tableSchema', 'tableName', 'tableType', 'isInsertableInto'])
       .orderBy('tableName');
 
-    if (this.#includedSchemas.length) {
-      qb = qb.where('tableSchema', 'in', this.#includedSchemas);
-    }
     if (this.#includedTables.length) {
-      qb = qb.where('tableName', 'in', this.#includedTables);
+      qb = qb.where(db.raw<string>(`concat_ws('.',table_schema,table_name)`), 'in', this.#includedTables);
     }
     return qb.execute();
   }
@@ -62,11 +57,8 @@ export class PostgresExplorer implements ExplorerMethods<PostgresSchema> {
       .where('conrelid', '<>', 0)
       .groupBy(['conname', 'contype', 'tableSchema', 'tableName']);
 
-    if (this.#includedSchemas.length) {
-      qb = qb.where('tableSchema', 'in', this.#includedSchemas);
-    }
     if (this.#includedTables.length) {
-      qb = qb.where('tableName', 'in', this.#includedTables);
+      qb = qb.where(db.raw<string>(`concat_ws('.',table_schema,table_name)`), 'in', this.#includedTables);
     }
 
     const constraints = await qb.execute();
@@ -115,11 +107,12 @@ export class PostgresExplorer implements ExplorerMethods<PostgresSchema> {
         'keyColumnUsage.columnName',
       ]);
 
-    if (this.#includedSchemas.length) {
-      qbConstraints = qbConstraints.where('tableConstraints.tableSchema', 'in', this.#includedSchemas);
-    }
     if (this.#includedTables.length) {
-      qbConstraints = qbConstraints.where('tableConstraints.tableName', 'in', this.#includedTables);
+      qbConstraints = qbConstraints.where(
+        db.raw<string>(`concat_ws('.',table_constraints.table_schema,table_constraints.table_name)`),
+        'in',
+        this.#includedTables
+      );
     }
 
     const constraints = await qbConstraints.execute();
@@ -154,15 +147,15 @@ export class PostgresExplorer implements ExplorerMethods<PostgresSchema> {
         'columns.isGenerated',
         'pgType.typtype',
       ])
-
       .orderBy('tableName', 'asc')
       .orderBy('ordinalPosition', 'asc');
 
-    if (this.#includedSchemas.length) {
-      qbConstraints = qbConstraints.where('tableSchema', 'in', this.#includedSchemas);
-    }
     if (this.#includedTables.length) {
-      qbConstraints = qbConstraints.where('tableName', 'in', this.#includedTables);
+      qbConstraints = qbConstraints.where(
+        db.raw<string>(`concat_ws('.',table_schema,table_name)`),
+        'in',
+        this.#includedTables
+      );
     }
 
     const columns = await qbColumns.execute();

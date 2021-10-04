@@ -1,31 +1,16 @@
 import * as cases from 'change-case';
 import * as fs from 'fs';
 import * as handlebars from 'handlebars';
-import { guard } from '../utils';
-import { Explorer, ExplorerConfig } from './explorer';
 import * as path from 'path';
-
-export interface IntrospectionConfig extends ExplorerConfig {
-  paths: string[];
-  types?: Record<string, string>;
-  generate: Record<
-    string,
-    {
-      template: string;
-      folder: string;
-      root?: string;
-      imports?: string;
-      namespace?: 'always' | 'never' | 'auto';
-      repository?: boolean;
-    }
-  >;
-}
+import { guard } from '../utils';
+import { Explorer } from './explorer';
+import { ConfigSchema } from './schema';
 
 export class Introspection {
-  readonly #config: IntrospectionConfig;
+  readonly #config: ConfigSchema;
 
-  constructor(config: IntrospectionConfig) {
-    this.#config = config;
+  constructor(config: ConfigSchema) {
+    this.#config = ConfigSchema.create(config);
   }
 
   async introspect() {
@@ -33,7 +18,7 @@ export class Introspection {
     const definitions = await explorer.getDefinitions();
 
     const schemas: SchemaModel[] = Object.keys(this.#config.database).map((schema) => ({
-      isInSearchPath: this.#config.paths.includes(schema),
+      isInSearchPath: this.#config.searchPaths.includes(schema),
       schemaName: this.convertStringCase(schema),
       schemaEnums: definitions.enums
         .filter((enums) => enums.enumSchema === schema)
@@ -48,24 +33,13 @@ export class Introspection {
         .map((table) => {
           const schemaSetting = this.#config.database[table.tableSchema];
 
-          if (schemaSetting === false) {
-            return;
-          }
-
           const tableSetting = schemaSetting.tables?.[table.tableName];
-
-          if (tableSetting === false) {
-            return;
-          }
 
           const constraints = definitions.constraints
             .filter((constraint) => constraint.constraintSchema === table.tableSchema)
             .filter((constraint) => constraint.constraintTable === table.tableName)
             .map((constraint) => {
               const constraintSetting = tableSetting?.constriants?.[constraint.constraintName];
-              if (constraintSetting === false) {
-                return;
-              }
               return {
                 constraintName: this.convertStringCase(constraint.constraintName),
                 constraintAbbr: constraintSetting?.name,
@@ -167,16 +141,7 @@ export class Introspection {
 
     const templates = await Promise.all(
       Object.entries(this.#config.generate).map(
-        ([
-          key,
-          {
-            template = path.join(__dirname, '../templates/template.handlebars'),
-            root = 'Database',
-            namespace = 'auto',
-            imports = 'ormless',
-            repository = false,
-          },
-        ]) =>
+        ([key, { namespace, root, template, repository }]) =>
           new Promise<[string, string]>((resolve, reject) =>
             fs.readFile(template, { encoding: 'utf-8' }, (err, data) => {
               if (err) {
@@ -187,10 +152,9 @@ export class Introspection {
                   handlebars.compile(data)({
                     schemas,
                     root,
-                    imports,
+                    repository,
                     withNamespace:
                       namespace !== 'never' && namespace === 'auto' && Object.keys(this.#config.database).length > 1,
-                    repository,
                   }),
                 ]);
               }
